@@ -95,11 +95,11 @@ public class Ingresso {
 		this.autor = autor;
 	}
 
-	public int getLimiteReserva() {
+	public int getLimiteIngresso() {
 		return limiteIngresso;
 	}
 
-	public void setLimiteReserva(int limiteIngresso) {
+	public void setLimiteIngresso(int limiteIngresso) {
 		this.limiteIngresso = limiteIngresso;
 	}
 }
