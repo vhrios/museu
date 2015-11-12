@@ -12,9 +12,10 @@ public class Ingresso {
 	private float precoSemana;
 	private float precoFimDeSemana;
 	private Autor autor;
+	private int limiteIngresso;
 
 	public Ingresso(int id, String tituloExibicao, Date dataInicio, Date dataFim, boolean exibicaoEspecial,
-			float precoSemana, float precoFimDeSemana, Autor autor) {
+			float precoSemana, float precoFimDeSemana, Autor autor, int limiteIngresso) {
 		this.id = id;
 		this.tituloExibicao = tituloExibicao;
 		this.dataInicio = dataInicio;
@@ -23,10 +24,11 @@ public class Ingresso {
 		this.precoSemana = precoSemana;
 		this.precoFimDeSemana = precoFimDeSemana;
 		this.autor = autor;
+		this.limiteIngresso = limiteIngresso;
 	}
 
 	public Ingresso() {
-		this(0, "", null, null, false, 0, 0, new Autor());
+		this(0, "", null, null, false, 0, 0, new Autor(), 0);
 	}
 
 	public int getId() {
@@ -93,4 +95,11 @@ public class Ingresso {
 		this.autor = autor;
 	}
 
+	public int getLimiteIngresso() {
+		return limiteIngresso;
+	}
+
+	public void setLimiteIngresso(int limiteIngresso) {
+		this.limiteIngresso = limiteIngresso;
+	}
 }
