@@ -15,7 +15,7 @@ public class VisitanteCotroller {
 		try {
 			iv.insereVisitante(v);
 			JOptionPane.showMessageDialog(null,
-					"Cadastrado com Sucesso!", "Sucesso",
+					"Visitante(s) Inserido(s) com Sucesso!", "Sucesso",
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "ERRO",
