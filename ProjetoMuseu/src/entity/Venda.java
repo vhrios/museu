@@ -8,8 +8,10 @@ public class Venda {
 	private float valorTotal;
 	private String tipoPagamento;
 	private Ingresso ingresso;
+	private boolean reserva;
 
-	public Venda(int id, int qtdInteiro, int qtdMeio, float valorTotal, String tipoPagamento, Ingresso ingresso) {
+	public Venda(int id, int qtdInteiro, int qtdMeio, float valorTotal, String tipoPagamento, Ingresso ingresso,
+			boolean reserva) {
 		this.id = id;
 		this.qtdInteiro = qtdInteiro;
 		this.qtdMeio = qtdMeio;
@@ -19,7 +21,7 @@ public class Venda {
 	}
 
 	public Venda() {
-		this(0, 0, 0, 0, "", new Ingresso());
+		this(0, 0, 0, 0, "", new Ingresso(), false);
 	}
 
 	public int getId() {
@@ -70,4 +72,11 @@ public class Venda {
 		this.ingresso = ingresso;
 	}
 
+	public boolean isReverva() {
+		return reserva;
+	}
+
+	public void setReserva(boolean reserva) {
+		this.reserva = reserva;
+	}
 }
