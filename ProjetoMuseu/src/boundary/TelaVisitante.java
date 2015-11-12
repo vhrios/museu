@@ -218,7 +218,6 @@ public class TelaVisitante implements ActionListener{
 //		Mudar para Vistante depois;
 		Pais p = new Pais();
 		p.setNome("pais");
-		v.setPais(p);
 //		Até aqui
 		v.setEscolaridade(cmbEscolaridade.getSelectedItem().toString());
 		v.setLocomocao(cmbLocomocao.getSelectedItem().toString());
