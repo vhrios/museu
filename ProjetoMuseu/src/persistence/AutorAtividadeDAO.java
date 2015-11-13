@@ -1,21 +1,10 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import entity.Atividade;
-import entity.Autor;
-
-public class AutorAtividadeDAO implements IAutorAtividade {
+public class AutorAtividadeDAO /*implements IAutorAtividade*/{
 
 	/*
 	 * private Atividade atividade; private Autor autor;
-	 */
+	 
 
 	private Connection c;
 
@@ -24,10 +13,7 @@ public class AutorAtividadeDAO implements IAutorAtividade {
 		c = iC.connect();
 	}
 
-	public AutorAtividadeDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(List<Atividade> atividades, Autor autor) throws SQLException {
 
 		String sql = "DELETE autor_atividade WHERE autor_id = ?";
@@ -56,6 +42,7 @@ public class AutorAtividadeDAO implements IAutorAtividade {
 		return false;
 	}
 
+	@Override
 	public boolean apagar(List<Atividade> atividades, Autor autor) throws SQLException {
 		if (autor.getId() != 0) {
 			String sql = "DELETE autor_atividade WHERE autor_id = ?";
@@ -73,6 +60,7 @@ public class AutorAtividadeDAO implements IAutorAtividade {
 		throw new SQLException("Falha na atualização do Autor, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public List<Atividade> pesquisarPorAutor(int i) throws SQLException {
 		String sql = "SELECT atividade_id FROM autor_atividade WHERE autor_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -88,5 +76,5 @@ public class AutorAtividadeDAO implements IAutorAtividade {
 		ps.close();
 		return aList;
 	}
-
+*/
 }
