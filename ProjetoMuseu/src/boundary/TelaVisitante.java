@@ -3,14 +3,15 @@ package boundary;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,9 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import controller.ControllerTabela;
+import controller.VisitanteController;
 import entity.Locomocao;
 import entity.NivelAcademico;
-import entity.Pais;
+import entity.Paises;
 import entity.Visitante;
 
 public class TelaVisitante implements ActionListener{
@@ -32,8 +34,8 @@ public class TelaVisitante implements ActionListener{
 	private JTextField txtIdade;
 	private JButton btnSalvar, btnAdicionar, btnVoltar, btnLimpar;
 	private JRadioButton rdbtnFem_, rdbtnMasc_;
-	private JList listPais;
-	private JComboBox cmbEscolaridade, cmbLocomocao;
+	@SuppressWarnings("rawtypes")
+	private JComboBox cmbEscolaridade, cmbLocomocao, cmbPais;
 	DefaultTableModel modelo;
 	
 	/**
@@ -62,7 +64,7 @@ public class TelaVisitante implements ActionListener{
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	@SuppressWarnings({ "deprecation", "rawtypes" })
+	@SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 	private void initialize() {
 		frameVisitante = new JFrame();
 		frameVisitante.setTitle("Registro do Visitante");
@@ -112,10 +114,6 @@ public class TelaVisitante implements ActionListener{
 		bg.add(rdbtnMasc_);
 		bg.add(rdbtnFem_);
 		
-		listPais = new JList();
-		listPais.setBounds(54, 173, 167, 18);
-		frameVisitante.getContentPane().add(listPais);
-		
 		JLabel lblSexo = new JLabel("Sexo");
 		lblSexo.setBounds(54, 73, 46, 14);
 		frameVisitante.getContentPane().add(lblSexo);
@@ -125,14 +123,8 @@ public class TelaVisitante implements ActionListener{
 		frameVisitante.getContentPane().add(btnAdicionar);
 		
 		txtData = new JTextField();
-		javax.swing.text.MaskFormatter data;
-		try {
-			data = new javax.swing.text.MaskFormatter("##/##/####");
-			txtData = new javax.swing.JFormattedTextField(data);
-			txtData.setEditable(false);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		txtData.setEditable(false);
+		txtData.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis())));  
 		txtData.setBounds(93, 23, 135, 20);
 		frameVisitante.getContentPane().add(txtData);
 		txtData.setColumns(10);
@@ -178,6 +170,10 @@ public class TelaVisitante implements ActionListener{
 		btnLimpar.setBounds(528, 541, 101, 29);
 		frameVisitante.getContentPane().add(btnLimpar);
 		
+		cmbPais = new JComboBox(Paises.values());
+		cmbPais.setBounds(54, 171, 174, 20);
+		frameVisitante.getContentPane().add(cmbPais);
+		
 		btnAdicionar.addActionListener(this);
 		btnSalvar.addActionListener(this);
 		btnVoltar.addActionListener(this);
@@ -187,25 +183,31 @@ public class TelaVisitante implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
+		
 		if (cmd.equals("Voltar")) 
 			frameVisitante.dispose();
 		if (cmd.equals("Adicionar")) 
 			adicionarTabela();
 		if (cmd.equals("Salvar"))
-			salvarVisitante();
+			salvaVisitante();
 		if (cmd.equals("Limpar")) 
 			limpaTudo();
+		
 	}
+	
+	Visitante v = null;
+	VisitanteController vc = new VisitanteController();
 
 	public void limpaTudo() {
 		rdbtnMasc_.setSelected(true);
 		txtIdade.setText("");
-		listPais.removeAll();
+		cmbPais.setSelectedItem(Paises.Selecione);
 		cmbEscolaridade.setSelectedItem(NivelAcademico.Selecione);
 		cmbLocomocao.setSelectedItem(Locomocao.Selecione);
 	}
 
 	public Visitante salvarVisitante() {
+		
 		Visitante v = new Visitante();
 		boolean sexo;
 		if (rdbtnFem_.isSelected()) {
@@ -215,35 +217,81 @@ public class TelaVisitante implements ActionListener{
 		}
 		v.setSexo(sexo);
 		v.setIdade(Integer.parseInt(txtIdade.getText()));
-//		Mudar para Vistante depois;
-		Pais p = new Pais();
-		p.setNome("pais");
-//		Até aqui
+		v.setPais(cmbPais.getSelectedItem().toString());
 		v.setEscolaridade(cmbEscolaridade.getSelectedItem().toString());
 		v.setLocomocao(cmbLocomocao.getSelectedItem().toString());
-		
-		limpaTudo();
-		modelo.setNumRows(0);
 		
 		return v;
 	}
 
 	private void adicionarTabela() {
-		String sexo = null;
 		
-		if (rdbtnFem_.isSelected()) {
-			sexo = "Feminino";
+		String e = cmbEscolaridade.getSelectedItem().toString();
+		String p = cmbPais.getSelectedItem().toString();
+		String l = cmbLocomocao.getSelectedItem().toString();
+		
+		if (!"".equals(txtIdade.getText())) {
+			if (!"Selecione".equals(p)) {
+				if (!"Selecione".equals(e)) {
+					if (!"Selecione".equals(l)) {
+						String sexo = null;
+						
+						if (rdbtnFem_.isSelected()) {
+							sexo = "Feminino";
+						} else{
+							sexo = "Masculino";
+						}
+						
+							Object[] linha = new Object[5];
+							linha[0] = txtIdade.getText();
+							linha[1] = sexo;
+							linha[2] = "Pais";
+							linha[3] = cmbEscolaridade.getSelectedItem();
+							linha[4] = cmbLocomocao.getSelectedItem();
+							modelo.addRow(linha);	
+							
+							Visitante v = null;
+							VisitanteController vc = new VisitanteController();
+							
+							v = salvarVisitante();
+							vc.salvaVisitante(v);
+							
+							txtIdade.setText("");
+							
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Escolha a Locomoção", "Alerta",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+					
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"Escolha a Escolaridade", "Alerta",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"Escolha o País", "Alerta",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else{
-			sexo = "Masculino";
+			JOptionPane.showMessageDialog(null,
+					"Preencha o campo Idade", "Alerta",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
 		
-			Object[] linha = new Object[5];
-			linha[0] = txtIdade.getText();
-			linha[1] = sexo;
-			linha[2] = "Pais";
-			linha[3] = cmbEscolaridade.getSelectedItem();
-			linha[4] = cmbLocomocao.getSelectedItem();
-			modelo.addRow(linha);
+	}
 	
+	public void salvaVisitante(){
+		if (modelo.getRowCount() != 0) {
+			JOptionPane.showMessageDialog(null,
+					"Visitante(s) registrado(s) com Sucesso!", "Sucesso",
+					JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null,
+					"Não há Visitante(s) para ser(em) \n                registrado(s)", "Alerta",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }
