@@ -9,7 +9,7 @@ import java.util.List;
 
 import entity.Pais;
 
-public class PaisDAO {
+public class PaisDAO implements IPais{
 
 	/*
 	 * private int id;
@@ -23,18 +23,17 @@ public class PaisDAO {
 		c = iC.connect();
 	}
 
-	public PaisDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Pais p) throws SQLException {
 		return false;
 	}
 
+	@Override
 	public boolean apagar(Pais p) throws SQLException {
 		return false;
 	}
 
+	@Override
 	public Pais pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT nome FROM pais WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -53,6 +52,7 @@ public class PaisDAO {
 		return p;
 	}
 
+	@Override
 	public List<Pais> carregarTodos() throws SQLException {
 		String sql = "SELECT id, nome FROM pais";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -61,7 +61,10 @@ public class PaisDAO {
 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			pList.add(new Pais(rs.getInt("id"), rs.getString("nome")));
+			Pais p = new Pais();
+			p.setId(rs.getInt("id"));
+			p.setNome(rs.getString("nome"));
+			pList.add(p);
 		}
 		ps.close();
 		return pList;

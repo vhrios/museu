@@ -10,7 +10,7 @@ import java.util.List;
 import entity.Cidade;
 import entity.Estado;
 
-public class CidadeDAO {
+public class CidadeDAO implements ICidade{
 
 	/*
 	 * private int id;
@@ -25,10 +25,7 @@ public class CidadeDAO {
 		c = iC.connect();
 	}
 
-	public CidadeDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Cidade a) throws SQLException {
 		if (a.getId() == 0) {
 			String sql = "INSERT INTO cidade (nome, estado_id)" + " VALUES (?,?)";
@@ -50,6 +47,7 @@ public class CidadeDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Cidade a) throws SQLException {
 		if (a.getId() != 0) {
 			String sql = "DELETE cidade WHERE id = ?";
@@ -62,6 +60,7 @@ public class CidadeDAO {
 			return false;
 	}
 
+	@Override
 	public Cidade pesquisarPorID(int idCidade) throws SQLException {
 		String sql = "SELECT nome, estado_id FROM cidade WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -81,6 +80,7 @@ public class CidadeDAO {
 		return a;
 	}
 
+	@Override
 	public List<Cidade> pesquisarPorNome(String nome) throws SQLException {
 		String sql = "SELECT id, estado_id FROM cidade WHERE nome = '?'";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -90,12 +90,18 @@ public class CidadeDAO {
 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			aList.add(new Cidade(rs.getInt("id"), nome, new EstadoDAO().pesquisarPorID(rs.getInt("estado_id"))));
+			Cidade c = new Cidade();
+			c.setId(rs.getInt("id"));
+			c.setNome(nome);
+			Estado e = new EstadoDAO().pesquisarPorID(rs.getInt("estado_id"));
+			c.setEstado(e);
+			aList.add(c);
 		}
 		ps.close();
 		return aList;
 	}
 
+	@Override
 	public List<Cidade> pesquisarPorEstado(Estado estado) throws SQLException {
 		String sql = "SELECT id, nome, estado_id FROM cidade WHERE estado_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -105,12 +111,17 @@ public class CidadeDAO {
 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			aList.add(new Cidade(rs.getInt("id"), rs.getString("nome"), estado));
+			Cidade c = new Cidade();
+			c.setId(rs.getInt("id"));
+			c.setNome(rs.getString("nome"));
+			c.setEstado(estado);
+			aList.add(c);
 		}
 		ps.close();
 		return aList;
 	}
 
+	@Override
 	public List<Cidade> pesquisarPorEstado(int estado_id) throws SQLException {
 		return pesquisarPorEstado(new EstadoDAO().pesquisarPorID(estado_id));
 	}

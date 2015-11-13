@@ -12,24 +12,7 @@ public class Emprestimo {
 	private Date dataDevolucao;
 	private String observacao;
 	private Instituicao instituicao;
-
 	private List<Obra> obras;
-
-	public Emprestimo(int id, String status, String tituloExibicao, Date dataEmprestimo, Date dataDevolucao,
-			String observacao, Instituicao instituicao, List<Obra> obras) {
-		this.id = id;
-		this.status = status;
-		this.tituloExibicao = tituloExibicao;
-		this.dataEmprestimo = dataEmprestimo;
-		this.dataDevolucao = dataDevolucao;
-		this.observacao = observacao;
-		this.instituicao = instituicao;
-		this.setObras(obras);
-	}
-
-	public Emprestimo() {
-		this(0, "", "", null, null, "", new Instituicao(), null);
-	}
 
 	public int getId() {
 		return id;

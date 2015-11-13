@@ -1,22 +1,11 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import entity.Atividade;
-import entity.Autor;
-
-public class AtividadeDAO {
+public class AtividadeDAO /*implements IAtividade*/{
 
 	/*
 	 * private int id; private String nome;
 	 */
-
+/*
 	private Connection c;
 
 	public AtividadeDAO() {
@@ -24,10 +13,7 @@ public class AtividadeDAO {
 		c = iC.connect();
 	}
 
-	public AtividadeDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Atividade a) throws SQLException {
 		PreparedStatement ps;
 		if (a.getId() == 0) {
@@ -58,6 +44,7 @@ public class AtividadeDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Atividade a) throws SQLException {
 		if (a.getId() != 0) {
 			String sql = "DELETE atividade WHERE id = ?";
@@ -75,6 +62,7 @@ public class AtividadeDAO {
 		throw new SQLException("Falha na atualização da Atividade, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Atividade pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT nome FROM atividade WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -94,6 +82,7 @@ public class AtividadeDAO {
 		return a;
 	}
 
+	@Override
 	public Atividade pesquisarPorNome(String nome) throws SQLException {
 		String sql = "SELECT id FROM atividade WHERE nome = '?'";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -113,6 +102,7 @@ public class AtividadeDAO {
 		return a;
 	}
 
+	@Override
 	public List<Atividade> pesquisarPorAutor(Autor a) throws SQLException {
 		String sql = "SELECT id, nome FROM atividade AS a INNER JOIN autor_atividade AS aa ON a.id = aa.atividade_id WHERE aa.autor_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -123,13 +113,17 @@ public class AtividadeDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new Atividade(rs.getInt("id"), rs.getString("nome")));
+			Atividade atividadeResultSet = new Atividade();
+			atividadeResultSet.setId(rs.getInt("id"));
+			atividadeResultSet.setNome(rs.getString("nome"));
+			aList.add(atividadeResultSet);
 		}
 
 		ps.close();
 		return aList;
 	}
 
+	@Override
 	public List<Atividade> carregarTodos() throws SQLException {
 		String sql = "SELECT id, nome FROM atividade";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -139,11 +133,14 @@ public class AtividadeDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new Atividade(rs.getInt("id"), rs.getString("nome")));
+			Atividade atividadeResultSet = new Atividade();
+			atividadeResultSet.setId(rs.getInt("id"));
+			atividadeResultSet.setNome(rs.getString("nome"));
+			aList.add(atividadeResultSet);
 		}
 
 		ps.close();
 		return aList;
 	}
-
+	*/
 }

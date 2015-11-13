@@ -20,10 +20,10 @@ public interface ICidade {
 
 	public Cidade pesquisarPorID(int id) throws SQLException;
 
-	public Cidade pesquisarPorNome(String nome) throws SQLException;
+	public List<Cidade> pesquisarPorNome(String nome) throws SQLException;
 
-	public Cidade pesquisarPorEstado(Estado e) throws SQLException;
+	public List<Cidade> pesquisarPorEstado(Estado e) throws SQLException;
 
-	public List<Cidade> carregarTodos() throws SQLException;
+	public List<Cidade> pesquisarPorEstado(int idEstado) throws SQLException;
 
 }

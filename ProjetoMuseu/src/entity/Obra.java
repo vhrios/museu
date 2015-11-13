@@ -5,7 +5,9 @@ public class Obra {
 	private int id;
 	private String titulo;
 	private String apelido;
-	private String data;
+	private int dia;
+	private int mes;
+	private int ano;
 	private String periodo;
 	private float altura;
 	private float largura;
@@ -17,30 +19,6 @@ public class Obra {
 	private String categoria;
 	private String tipo;
 	private String movimento;
-
-	public Obra(int id, String titulo, String apelido, String data, String periodo, float altura, float largura,
-			float profundidade, double valor, String biografia, Autor autor, Instituicao instituicao, String categoria,
-			String tipo, String movimento) {
-		this.id = id;
-		this.titulo = titulo;
-		this.apelido = apelido;
-		this.data = data;
-		this.periodo = periodo;
-		this.altura = altura;
-		this.largura = largura;
-		this.profundidade = profundidade;
-		this.valor = valor;
-		this.biografia = biografia;
-		this.autor = autor;
-		this.instituicao = instituicao;
-		this.categoria = categoria;
-		this.tipo = tipo;
-		this.movimento = movimento;
-	}
-
-	public Obra() {
-		this(0, "", "", "", "", 0, 0, 0, 0, "", new Autor(), new Instituicao(), "", "", "");
-	}
 
 	public int getId() {
 		return id;
@@ -66,12 +44,28 @@ public class Obra {
 		this.apelido = apelido;
 	}
 
-	public String getData() {
-		return data;
+	public int getDia() {
+		return dia;
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setDia(int dia) {
+		this.dia = dia;
+	}
+
+	public int getMes() {
+		return mes;
+	}
+
+	public void setMes(int mes) {
+		this.mes = mes;
+	}
+
+	public int getAno() {
+		return ano;
+	}
+
+	public void setAno(int ano) {
+		this.ano = ano;
 	}
 
 	public String getPeriodo() {

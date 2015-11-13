@@ -10,7 +10,7 @@ import java.util.List;
 
 import entity.Venda;
 
-public class VendaDAO {
+public class VendaDAO implements IVenda{
 
 	/*
 	 * private int id;
@@ -29,10 +29,7 @@ public class VendaDAO {
 		c = iC.connect();
 	}
 
-	public VendaDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Venda v) throws SQLException {
 		if (v.getId() == 0) {
 			String sql = "INSERT INTO venda (qtdInteiro, qtdMeio, valorTotal, tipoPagamanto, ingresso_id, reserva) VALUES (?,?,?,?,?,?)";
@@ -41,7 +38,6 @@ public class VendaDAO {
 			ps.setInt(2, v.getQtdMeio());
 			ps.setFloat(3, v.getValorTotal());
 			ps.setString(4, v.getTipoPagamento());
-			ps.setInt(5, v.getIngresso().getId());
 			ps.setBoolean(6, v.isReverva());
 
 			int linhasAfetadas = ps.executeUpdate();
@@ -64,10 +60,7 @@ public class VendaDAO {
 		}
 	}
 
-	public boolean apagar(Venda v) throws SQLException {
-		return false;
-	}
-
+	@Override
 	public Venda pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT qtdInteiro, qtdMeio, valorTotal, tipoPagamanto, ingresso_id, reserva FROM venda WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -83,7 +76,6 @@ public class VendaDAO {
 			v.setQtdMeio(rs.getInt("qtdMeio"));
 			v.setValorTotal(rs.getFloat("valorTotal"));
 			v.setTipoPagamento(rs.getString("tipoPagamento"));
-			v.setIngresso(new IngressoDAO().pesquisarPorID(rs.getInt("ingresso_id")));
 			v.setReserva(rs.getBoolean("reserva"));
 		} else {
 			v = null;
@@ -92,6 +84,7 @@ public class VendaDAO {
 		return v;
 	}
 
+	@Override
 	public List<Venda> carregarTodos() throws SQLException {
 		String sql = "SELECT id, qtdInteiro, qtdMeio, valorTotal, tipoPagamanto, ingresso_id, reserva FROM venda";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -101,9 +94,14 @@ public class VendaDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			vList.add(
-					new Venda(rs.getInt("id"), rs.getInt("qtdInteiro"), rs.getInt("qtdMeio"), rs.getFloat("valorTotal"),
-							rs.getString("tipoPagamento"), new IngressoDAO().pesquisarPorID(rs.getInt("ingresso_id")), rs.getBoolean("reserva")));
+			Venda v = new Venda();
+			v.setId(rs.getInt("id"));
+			v.setQtdInteiro(rs.getInt("qtdInteiro"));
+			v.setQtdMeio(rs.getInt("qtdMeio"));
+			v.setValorTotal(rs.getFloat("valorTotal"));
+			v.setTipoPagamento(rs.getString("tipoPagamento"));
+			v.setReserva(rs.getBoolean("reserva"));
+			vList.add(v);
 		}
 
 		ps.close();

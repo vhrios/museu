@@ -28,7 +28,8 @@ public class ConexaoMySQL implements IConexaoMySQL {
 		this("127.0.0.1", "3306", "museu", "root", "root");
 		//port 3306
 	}
-	
+
+	@Override
 	public Connection connect() {
 		String url;
 		String userName = this.user;
@@ -60,6 +61,7 @@ public class ConexaoMySQL implements IConexaoMySQL {
 		return c;
 	}
 
+	@Override
 	public void disconnect() {
 		String url;
 		String userName = this.user;
@@ -87,6 +89,7 @@ public class ConexaoMySQL implements IConexaoMySQL {
 
 	}
 
+	@Override
 	public void disconnect(Connection conn) {
 		try {
 			if (conn != null)
@@ -100,6 +103,7 @@ public class ConexaoMySQL implements IConexaoMySQL {
 
 	}
 
+	@Override
 	public boolean isConnected() {
 		return this.connected;
 	}

@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import entity.Autor;
 import entity.Ingresso;
 
-public class IngressoDAO {
+public class IngressoDAO implements IIngresso{
 
 	/*
 	 * private int id;
@@ -32,10 +33,7 @@ public class IngressoDAO {
 		c = iC.connect();
 	}
 
-	public IngressoDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Ingresso i) throws SQLException {
 		PreparedStatement ps;
 		if (i.getId() == 0) {
@@ -80,6 +78,7 @@ public class IngressoDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Ingresso i) throws SQLException {
 		if (i.getId() != 0) {
 			String sql = "DELETE ingresso WHERE id = ?";
@@ -97,6 +96,7 @@ public class IngressoDAO {
 		throw new SQLException("Falha na atualização do Ingresso, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Ingresso pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT tituloExibicao, dataInicio, dataFim, exibicaoEspecial, precoSemana, precoFimDeSemana, autor_id FROM, limiteIngresso obra WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -123,6 +123,7 @@ public class IngressoDAO {
 		return i;
 	}
 
+	@Override
 	public List<Ingresso> pesquisarPorData(Date d) throws SQLException {
 		String sql = "SELECT id, tituloExibicao, dataInicio, dataFim, exibicaoEspecial, precoSemana, precoFimDeSemana, autor_id, limiteIngresso FROM ingresso WHERE ? BETWEEN dataInicio AND dataFim";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -133,17 +134,28 @@ public class IngressoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			iList.add(new Ingresso(rs.getInt("id"), rs.getString("tituloExibicao"),
-					new java.util.Date(rs.getDate("dataInicio").getTime()),
-					new java.util.Date(rs.getDate("dataFim").getTime()), rs.getBoolean("exibicaoEspecial"),
-					rs.getFloat("precoSemana"), rs.getFloat("precoFimDeSemana"),
-					new AutorDAO().pesquisarPorID(rs.getInt("autor_id")), rs.getInt("limiteIngresso")));
+			Ingresso i = new Ingresso();
+			i.setId(rs.getInt("id"));
+			i.setTituloExibicao(rs.getString("tituloExibicao"));
+			i.setDataInicio(new java.util.Date(rs.getDate("dataInicio").getTime()));
+			i.setDataFim(new java.util.Date(rs.getDate("dataFim").getTime()));
+			i.setExibicaoEspecial(rs.getBoolean("exibicaoEspecial"));
+			i.setPrecoSemana(rs.getFloat("precoSemana"));
+			i.setPrecoFimDeSemana(rs.getFloat("precoFimDeSemana"));
+
+			Autor a = new AutorDAO().pesquisarPorID(rs.getInt("autor_id"));
+
+			i.setAutor(a);
+			i.setLimiteIngresso(rs.getInt("limiteIngresso"));
+
+			iList.add(i);
 		}
 
 		ps.close();
 		return iList;
 	}
 
+	@Override
 	public List<Ingresso> pesquisarExibicoesAtivas() throws SQLException {
 		String sql = "SELECT id, tituloExibicao, dataInicio, dataFim, exibicaoEspecial, precoSemana, precoFimDeSemana, autor_id, limiteIngresso FROM ingresso WHERE SYSDATE() BETWEEN dataInicio AND dataFim";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -153,17 +165,28 @@ public class IngressoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			iList.add(new Ingresso(rs.getInt("id"), rs.getString("tituloExibicao"),
-					new java.util.Date(rs.getDate("dataInicio").getTime()),
-					new java.util.Date(rs.getDate("dataFim").getTime()), rs.getBoolean("exibicaoEspecial"),
-					rs.getFloat("precoSemana"), rs.getFloat("precoFimDeSemana"),
-					new AutorDAO().pesquisarPorID(rs.getInt("autor_id")), rs.getInt("limiteIngresso")));
+			Ingresso i = new Ingresso();
+			i.setId(rs.getInt("id"));
+			i.setTituloExibicao(rs.getString("tituloExibicao"));
+			i.setDataInicio(new java.util.Date(rs.getDate("dataInicio").getTime()));
+			i.setDataFim(new java.util.Date(rs.getDate("dataFim").getTime()));
+			i.setExibicaoEspecial(rs.getBoolean("exibicaoEspecial"));
+			i.setPrecoSemana(rs.getFloat("precoSemana"));
+			i.setPrecoFimDeSemana(rs.getFloat("precoFimDeSemana"));
+
+			Autor a = new AutorDAO().pesquisarPorID(rs.getInt("autor_id"));
+
+			i.setAutor(a);
+			i.setLimiteIngresso(rs.getInt("limiteIngresso"));
+
+			iList.add(i);
 		}
 
 		ps.close();
 		return iList;
 	}
 
+	@Override
 	public List<Ingresso> carregarTodos() throws SQLException {
 		String sql = "SELECT id, tituloExibicao, dataInicio, dataFim, exibicaoEspecial, precoSemana, precoFimDeSemana, autor_id, limiteIngresso FROM ingresso";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -173,13 +196,22 @@ public class IngressoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			iList.add(new Ingresso(rs.getInt("id"), rs.getString("tituloExibicao"),
-					new java.util.Date(rs.getDate("dataInicio").getTime()),
-					new java.util.Date(rs.getDate("dataFim").getTime()), rs.getBoolean("exibicaoEspecial"),
-					rs.getFloat("precoSemana"), rs.getFloat("precoFimDeSemana"),
-					new AutorDAO().pesquisarPorID(rs.getInt("autor_id")), rs.getInt("limiteIngresso")));
-		}
+			Ingresso i = new Ingresso();
+			i.setId(rs.getInt("id"));
+			i.setTituloExibicao(rs.getString("tituloExibicao"));
+			i.setDataInicio(new java.util.Date(rs.getDate("dataInicio").getTime()));
+			i.setDataFim(new java.util.Date(rs.getDate("dataFim").getTime()));
+			i.setExibicaoEspecial(rs.getBoolean("exibicaoEspecial"));
+			i.setPrecoSemana(rs.getFloat("precoSemana"));
+			i.setPrecoFimDeSemana(rs.getFloat("precoFimDeSemana"));
 
+			Autor a = new AutorDAO().pesquisarPorID(rs.getInt("autor_id"));
+
+			i.setAutor(a);
+			i.setLimiteIngresso(rs.getInt("limiteIngresso"));
+
+			iList.add(i);
+		}
 		ps.close();
 		return iList;
 	}

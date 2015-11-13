@@ -5,12 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import entity.Visitante;
 
-public class VisitanteDAO {
+public class VisitanteDAO implements IVisitante{
 
 	/*
 	 * private int id;
@@ -18,7 +17,7 @@ public class VisitanteDAO {
 	 * private String escolaridade;
 	 * private String locomocao;
 	 * private int idade;
-	 * private Pais pais;
+	 * private String pais;
 	 */
 
 	private Connection c;
@@ -28,10 +27,44 @@ public class VisitanteDAO {
 		c = iC.connect();
 	}
 
-	public VisitanteDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
+	/*
+	public Visitante pesquisarPorID(int id) throws SQLException {
+		String sql = "SELECT id, sexo, escolaridade, locomocao, idade, pais_id FROM visitante WHERE id = ?";
+		PreparedStatement ps = c.prepareStatement(sql);
+		ps.setInt(1, id);
 
+		Visitante v = new Visitante();
+
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			v.setId(id);
+			v.setSexo(rs.getBoolean("nome"));
+			v.setEscolaridade(rs.getString("escolaridade"));
+			v.setLocomocao(rs.getString("locomocao"));
+			v.setIdade(rs.getInt("idade"));
+		} else {
+			v = null;
+		}
+		ps.close();
+		return v;
+	}
+	
+	public List<Visitante> carregarTodos() throws SQLException {
+		String sql = "SELECT id, sexo, escolaridade, locomocao, idade, pais_id FROM visitante";
+		PreparedStatement ps = c.prepareStatement(sql);
+
+		List<Visitante> vList = new ArrayList<Visitante>();
+
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+//			vList.add(new Visitante(rs.getInt("id"), rs.getBoolean("sexo"), rs.getString("escolaridade"),
+//					rs.getString("locomocao"), rs.getInt("idade"), new PaisDAO().pesquisarPorID(rs.getInt("pais_id"))));
+		}
+		ps.close();
+		return vList;
+	}
+*/
+	@Override
 	public boolean manter(Visitante v) throws SQLException {
 		if (v.getId() == 0) {
 			String sql = "INSERT INTO visitante (sexo, escolaridade, locomocao, idade, pais_id) VALUES (?,?,?,?,?)";
@@ -40,7 +73,7 @@ public class VisitanteDAO {
 			ps.setString(2, v.getEscolaridade());
 			ps.setString(3, v.getLocomocao());
 			ps.setInt(4, v.getIdade());
-			ps.setInt(5, v.getPais().getId());
+			ps.setString(5, v.getPais());
 
 			int linhasAfetadas = ps.executeUpdate();
 
@@ -64,7 +97,7 @@ public class VisitanteDAO {
 			ps.setString(2, v.getEscolaridade());
 			ps.setString(3, v.getLocomocao());
 			ps.setInt(4, v.getIdade());
-			ps.setInt(5, v.getPais().getId());
+			ps.setString(5, v.getPais());
 			ps.setInt(6, v.getId());
 
 			int linhasAfetadas = ps.executeUpdate();
@@ -87,45 +120,10 @@ public class VisitanteDAO {
 		}
 	}
 
-	public boolean apagar(Visitante v) throws SQLException {
-		return false;
-	}
-
-	public Visitante pesquisarPorID(int id) throws SQLException {
-		String sql = "SELECT id, sexo, escolaridade, locomocao, idade, pais_id FROM visitante WHERE id = ?";
-		PreparedStatement ps = c.prepareStatement(sql);
-		ps.setInt(1, id);
-
-		Visitante v = new Visitante();
-
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			v.setId(id);
-			v.setSexo(rs.getBoolean("nome"));
-			v.setEscolaridade(rs.getString("escolaridade"));
-			v.setLocomocao(rs.getString("locomocao"));
-			v.setIdade(rs.getInt("idade"));
-			v.setPais(new PaisDAO().pesquisarPorID(rs.getInt("pais_id")));
-		} else {
-			v = null;
-		}
-		ps.close();
-		return v;
-	}
-
+	@Override
 	public List<Visitante> carregarTodos() throws SQLException {
-		String sql = "SELECT id, sexo, escolaridade, locomocao, idade, pais_id FROM visitante";
-		PreparedStatement ps = c.prepareStatement(sql);
-
-		List<Visitante> vList = new ArrayList<Visitante>();
-
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			vList.add(new Visitante(rs.getInt("id"), rs.getBoolean("sexo"), rs.getString("escolaridade"),
-					rs.getString("locomocao"), rs.getInt("idade"), new PaisDAO().pesquisarPorID(rs.getInt("pais_id"))));
-		}
-		ps.close();
-		return vList;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

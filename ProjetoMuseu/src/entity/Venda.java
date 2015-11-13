@@ -7,22 +7,8 @@ public class Venda {
 	private int qtdMeio;
 	private float valorTotal;
 	private String tipoPagamento;
-	private Ingresso ingresso;
+	private String nomeExposicao;
 	private boolean reserva;
-
-	public Venda(int id, int qtdInteiro, int qtdMeio, float valorTotal, String tipoPagamento, Ingresso ingresso,
-			boolean reserva) {
-		this.id = id;
-		this.qtdInteiro = qtdInteiro;
-		this.qtdMeio = qtdMeio;
-		this.valorTotal = valorTotal;
-		this.tipoPagamento = tipoPagamento;
-		this.ingresso = ingresso;
-	}
-
-	public Venda() {
-		this(0, 0, 0, 0, "", new Ingresso(), false);
-	}
 
 	public int getId() {
 		return id;
@@ -64,12 +50,12 @@ public class Venda {
 		this.tipoPagamento = tipoPagamento;
 	}
 
-	public Ingresso getIngresso() {
-		return ingresso;
+	public String getNomeExposicao() {
+		return nomeExposicao;
 	}
 
-	public void setIngresso(Ingresso ingresso) {
-		this.ingresso = ingresso;
+	public void setNomeExposicao(String nomeExposicao) {
+		this.nomeExposicao = nomeExposicao;
 	}
 
 	public boolean isReverva() {

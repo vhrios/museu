@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import control.UsuarioControle;
+import controller.UsuarioControle;
 import entity.Usuario;
 
 public class TelaLogin implements ActionListener{

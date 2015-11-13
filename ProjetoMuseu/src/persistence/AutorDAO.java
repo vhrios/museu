@@ -10,19 +10,26 @@ import java.util.List;
 
 import entity.Autor;
 
-public class AutorDAO {
+public class AutorDAO implements IAutor{
 
 	/*
 	 * private int id;
 	 * private String nome; 
-	 * private String dataNasc; 
-	 * private String dataObito; 
-	 * private String iniAtividade; 
-	 * private String fimAtividade; 
+	 * private int diaN;
+	 * private int mesN;
+	 * private int anoN;
+	 * private int diaM;
+	 * private int mesM;
+	 * private int anoM;
+	 * private int diaIniAtv;
+	 * private int mesIniAtv;
+	 * private int anoIniAtv;
+	 * private int diaFimAtv;
+	 * private int mesFimAtv;
+	 * private int anoFimAtv;
 	 * private String descricao; 
-	 * private Pais pais;
-	 * 
-	 * private List<Atividades> atividades;
+	 * private String pais;
+	 * private List<String> atividades;
 	 */
 
 	private Connection c;
@@ -32,33 +39,46 @@ public class AutorDAO {
 		c = iC.connect();
 	}
 
-	public AutorDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Autor a) throws SQLException {
 		PreparedStatement ps;
 		if (a.getId() == 0) {
 			String sql = "INSERT INTO autor (nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id) VALUES (?,?,?,?,?,?,?)";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, a.getNome());
-			ps.setString(2, a.getDataNasc());
-			ps.setString(3, a.getDataObito());
-			ps.setString(4, a.getIniAtividade());
-			ps.setString(5, a.getFimAtividade());
-			ps.setString(6, a.getDescricao());
-			ps.setInt(7, a.getPais().getId());
+			ps.setInt(2, a.getDiaN());
+			ps.setInt(3, a.getMesN());
+			ps.setInt(4, a.getAnoN());
+			ps.setInt(5, a.getDiaM());
+			ps.setInt(6, a.getMesM());
+			ps.setInt(7, a.getAnoM());
+			ps.setInt(8, a.getDiaIniAtv());
+			ps.setInt(9, a.getMesIniAtv());
+			ps.setInt(10, a.getAnoIniAtv());
+			ps.setInt(11, a.getDiaFimAtv());
+			ps.setInt(12, a.getMesFimAtv());
+			ps.setInt(13, a.getAnoFimAtv());
+			ps.setString(14, a.getDescricao());
+			ps.setString(15, a.getPais());
 		} else {
 			String sql = "UPDATE autor SET nome = ?, dataNasc = ?, dataObito = ?, iniAtividade = ?, fimAtividade = ?, descricao = ?, pais_id = ? WHERE id = ?";
 			ps = c.prepareStatement(sql);
 			ps.setString(1, a.getNome());
-			ps.setString(2, a.getDataNasc());
-			ps.setString(3, a.getDataObito());
-			ps.setString(4, a.getIniAtividade());
-			ps.setString(5, a.getFimAtividade());
-			ps.setString(6, a.getDescricao());
-			ps.setInt(7, a.getPais().getId());
-			ps.setInt(8, a.getId());
+			ps.setInt(2, a.getDiaN());
+			ps.setInt(3, a.getMesN());
+			ps.setInt(4, a.getAnoN());
+			ps.setInt(5, a.getDiaM());
+			ps.setInt(6, a.getMesM());
+			ps.setInt(7, a.getAnoM());
+			ps.setInt(8, a.getDiaIniAtv());
+			ps.setInt(9, a.getMesIniAtv());
+			ps.setInt(10, a.getAnoIniAtv());
+			ps.setInt(11, a.getDiaFimAtv());
+			ps.setInt(12, a.getMesFimAtv());
+			ps.setInt(13, a.getAnoFimAtv());
+			ps.setString(14, a.getDescricao());
+			ps.setString(15, a.getPais());
+			ps.setInt(16, a.getId());
 		}
 		
 		int linhasAfetadas = ps.executeUpdate();
@@ -70,7 +90,7 @@ public class AutorDAO {
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
 			if (idsGerados.next()) {
 				a.setId(idsGerados.getInt(1));
-				new AutorAtividadeDAO(this.c).manter(a.getAtividades(), a);
+				new AutorAtividadeDAO().manter(a.getAtividades(), a);
 				ps.close();
 				return true;
 			} else {
@@ -79,6 +99,7 @@ public class AutorDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Autor a) throws SQLException {
 		if (a.getId() != 0) {
 			String sql = "DELETE autor WHERE id = ?";
@@ -96,6 +117,7 @@ public class AutorDAO {
 		throw new SQLException("Falha na atualização do Autor, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Autor pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -106,15 +128,25 @@ public class AutorDAO {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
-			a.setId(id);
+			a.setId(rs.getInt("id"));
 			a.setNome(rs.getString("nome"));
-			a.setDataNasc(rs.getString("dataNasc"));
-			a.setDataObito(rs.getString("dataObito"));
-			a.setIniAtividade(rs.getString("iniAtividade"));
-			a.setFimAtividade(rs.getString("fimAtividade"));
+			
+			a.setDiaN(rs.getInt("diaN"));
+			a.setMesN(rs.getInt("mesN"));
+			a.setAnoN(rs.getInt("anoN"));
+			a.setDiaM(rs.getInt("diaM"));
+			a.setMesM(rs.getInt("mesM"));
+			a.setAnoM(rs.getInt("anoM"));
+			a.setDiaIniAtv(rs.getInt("diaIniAtv"));
+			a.setMesIniAtv(rs.getInt("mesIniAtv"));
+			a.setAnoIniAtv(rs.getInt("anoIniAtv"));
+			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
+			a.setMesFimAtv(rs.getInt("mesFimAtv"));
+			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
+			
 			a.setDescricao(rs.getString("descricao"));
-			a.setPais(new PaisDAO().pesquisarPorID(rs.getInt("pais_id")));
-			a.setAtividades(new AtividadeDAO().pesquisarPorAutor(a));
+			a.setPais(rs.getString("Pais"));
+			a.setAtividades();
 		} else {
 			a = null;
 		}
@@ -122,6 +154,7 @@ public class AutorDAO {
 		return a;
 	}
 
+	@Override
 	public Autor pesquisarPorNome(String nome) throws SQLException {
 		String sql = "SELECT id, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor WHERE nome = '?'";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -133,14 +166,24 @@ public class AutorDAO {
 
 		if (rs.next()) {
 			a.setId(rs.getInt("id"));
-			a.setNome(nome);
-			a.setDataNasc(rs.getString("dataNasc"));
-			a.setDataObito(rs.getString("dataObito"));
-			a.setIniAtividade(rs.getString("iniAtividade"));
-			a.setFimAtividade(rs.getString("fimAtividade"));
+			a.setNome(rs.getString("nome"));
+			
+			a.setDiaN(rs.getInt("diaN"));
+			a.setMesN(rs.getInt("mesN"));
+			a.setAnoN(rs.getInt("anoN"));
+			a.setDiaM(rs.getInt("diaM"));
+			a.setMesM(rs.getInt("mesM"));
+			a.setAnoM(rs.getInt("anoM"));
+			a.setDiaIniAtv(rs.getInt("diaIniAtv"));
+			a.setMesIniAtv(rs.getInt("mesIniAtv"));
+			a.setAnoIniAtv(rs.getInt("anoIniAtv"));
+			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
+			a.setMesFimAtv(rs.getInt("mesFimAtv"));
+			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
+			
 			a.setDescricao(rs.getString("descricao"));
-			a.setPais(new PaisDAO().pesquisarPorID(rs.getInt("pais_id")));
-			a.setAtividades(new AutorAtividadeDAO().pesquisarPorAutor(rs.getInt("id")));
+			a.setPais(rs.getString("Pais"));
+			a.setAtividades();
 		} else {
 			a = null;
 		}
@@ -148,6 +191,7 @@ public class AutorDAO {
 		return a;
 	}
 
+	@Override
 	public List<Autor> carregarTodos() throws SQLException {
 		String sql = "SELECT id, nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -157,9 +201,27 @@ public class AutorDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new Autor(rs.getInt("id"), rs.getString("nome"), rs.getString("dataNasc"),
-					rs.getString("dataObito"), rs.getString("iniAtividade"), rs.getString("fimAtividade"),
-					rs.getString("descricao"), new PaisDAO().pesquisarPorID(rs.getInt("pais_id")), new AutorAtividadeDAO().pesquisarPorAutor(rs.getInt("id"))));
+			Autor a = new Autor();
+			a.setId(rs.getInt("id"));
+			a.setNome(rs.getString("nome"));
+			
+			a.setDiaN(rs.getInt("diaN"));
+			a.setMesN(rs.getInt("mesN"));
+			a.setAnoN(rs.getInt("anoN"));
+			a.setDiaM(rs.getInt("diaM"));
+			a.setMesM(rs.getInt("mesM"));
+			a.setAnoM(rs.getInt("anoM"));
+			a.setDiaIniAtv(rs.getInt("diaIniAtv"));
+			a.setMesIniAtv(rs.getInt("mesIniAtv"));
+			a.setAnoIniAtv(rs.getInt("anoIniAtv"));
+			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
+			a.setMesFimAtv(rs.getInt("mesFimAtv"));
+			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
+			
+			a.setDescricao(rs.getString("descricao"));
+			a.setPais(rs.getString("Pais"));
+			a.setAtividades();
+			aList.add(a);
 		}
 		ps.close();
 		return aList;

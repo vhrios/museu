@@ -10,8 +10,9 @@ import java.util.List;
 
 import entity.Emprestimo;
 import entity.Instituicao;
+import entity.Obra;
 
-public class EmprestimoDAO {
+public class EmprestimoDAO implements IEmprestimo{
 
 	/*
 	 * private int id; 
@@ -32,10 +33,7 @@ public class EmprestimoDAO {
 		c = iC.connect();
 	}
 
-	public EmprestimoDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Emprestimo e) throws SQLException {
 		PreparedStatement ps;
 		if (e.getId() == 0) {
@@ -68,7 +66,7 @@ public class EmprestimoDAO {
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
 			if (idsGerados.next()) {
 				e.setId(idsGerados.getInt(1));
-				new EmprestimoObraDAO(this.c).manter(e.getObras(), e);
+				new EmprestimoObraDAO().manter(e.getObras(), e);
 				ps.close();
 				return true;
 			} else {
@@ -77,6 +75,7 @@ public class EmprestimoDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Emprestimo e) throws SQLException {
 		if (e.getId() != 0) {
 			String sql = "DELETE emprestimo WHERE id = ?";
@@ -94,6 +93,7 @@ public class EmprestimoDAO {
 		throw new SQLException("Falha na atualização do Emprestimo, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Emprestimo pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT status, tituloExibicao, dataEmprestimo, dataDevolucao, observacao, instituicao_id FROM emprestimo WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -119,6 +119,7 @@ public class EmprestimoDAO {
 		return e;
 	}
 
+	@Override
 	public List<Emprestimo> pesquisarPorInstituicao(Instituicao i) throws SQLException {
 		String sql = "SELECT id, status, tituloExibicao, dataEmprestimo, dataDevolucao, observacao FROM emprestimo WHERE instituicao_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -129,14 +130,25 @@ public class EmprestimoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			eList.add(new Emprestimo(rs.getInt("id"), rs.getString("status"), rs.getString("tituloExibicao"),
-					rs.getDate("dataEmprestimo"), rs.getDate("dataDevolucao"), rs.getString("observacao"), i,
-					new EmprestimoObraDAO().pesquisarPorEmprestimo(rs.getInt("id"))));
+			Emprestimo e = new Emprestimo();
+			e.setId(rs.getInt("id"));
+			e.setStatus(rs.getString("status"));
+			e.setTituloExibicao(rs.getString("tituloExibicao"));
+			e.setDataEmprestimo(rs.getDate("dataEmprestimo"));
+			e.setDataDevolucao(rs.getDate("dataDevolucao"));
+			e.setObservacao(rs.getString("observacao"));
+			
+			List<Obra> obras = new EmprestimoObraDAO().pesquisarPorEmprestimo(rs.getInt("id"));
+			e.setObras(obras);
+			
+			e.setInstituicao(i);
+			eList.add(e);
 		}
 		ps.close();
 		return eList;
 	}
 
+	@Override
 	public List<Emprestimo> carregarTodos() throws SQLException {
 		String sql = "SELECT id, status, tituloExibicao, dataEmprestimo, dataDevolucao, observacao, instituicao_id FROM emprestimo";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -146,10 +158,22 @@ public class EmprestimoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			eList.add(new Emprestimo(rs.getInt("id"), rs.getString("status"), rs.getString("tituloExibicao"),
-					rs.getDate("dataEmprestimo"), rs.getDate("dataDevolucao"), rs.getString("observacao"),
-					new InstituicaoDAO().pesquisarPorID(rs.getInt("id")),
-					new EmprestimoObraDAO().pesquisarPorEmprestimo(rs.getInt("id"))));
+			Emprestimo e = new Emprestimo();
+			e.setId(rs.getInt("id"));
+			e.setStatus(rs.getString("status"));
+			e.setTituloExibicao(rs.getString("tituloExibicao"));
+			e.setDataEmprestimo(rs.getDate("dataEmprestimo"));
+			e.setDataDevolucao(rs.getDate("dataDevolucao"));
+			e.setObservacao(rs.getString("observacao"));
+			
+			List<Obra> obras = new EmprestimoObraDAO().pesquisarPorEmprestimo(rs.getInt("id"));
+			e.setObras(obras);
+			
+			Instituicao i = new InstituicaoDAO().pesquisarPorID(rs.getInt("id"));
+			e.setInstituicao(i);
+			eList.add(e);
+			
+			eList.add(e);
 		}
 		ps.close();
 		return eList;

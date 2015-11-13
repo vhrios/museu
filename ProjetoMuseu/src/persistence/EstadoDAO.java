@@ -10,7 +10,7 @@ import java.util.List;
 import entity.Estado;
 import entity.Pais;
 
-public class EstadoDAO {
+public class EstadoDAO implements IEstado{
 
 	/*
 	 * private int id;
@@ -25,10 +25,7 @@ public class EstadoDAO {
 		c = iC.connect();
 	}
 
-	public EstadoDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Estado e) throws SQLException {
 		if (e.getId() == 0) {
 			String sql = "INSERT INTO estado (nome, pais_id) VALUES (?, ?)";
@@ -50,6 +47,7 @@ public class EstadoDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Estado e) throws SQLException {
 		if (e.getId() != 0) {
 			String sql = "DELETE estado WHERE id = ?";
@@ -62,6 +60,7 @@ public class EstadoDAO {
 			return false;
 	}
 
+	@Override
 	public Estado pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT nome, pais_id FROM estado WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -81,6 +80,7 @@ public class EstadoDAO {
 		return e;
 	}
 
+	@Override
 	public List<Estado> pesquisarPorPais(Pais p) throws SQLException {
 		String sql = "SELECT id, nome FROM estado";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -89,12 +89,17 @@ public class EstadoDAO {
 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			eList.add(new Estado(rs.getInt("id"), rs.getString("nome"), p));
+			Estado e = new Estado();
+			e.setId(rs.getInt("id"));
+			e.setNome(rs.getString("nome"));
+			e.setPais(p);
+			eList.add(e);
 		}
 		ps.close();
 		return eList;
 	}
 
+	@Override
 	public List<Estado> carregarTodos() throws SQLException {
 		String sql = "SELECT id, nome, pais_id FROM estado";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -103,8 +108,14 @@ public class EstadoDAO {
 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			eList.add(new Estado(rs.getInt("id"), rs.getString("nome"),
-					new PaisDAO().pesquisarPorID(rs.getInt("pais_id"))));
+			Estado e = new Estado();
+			e.setId(rs.getInt("id"));
+			e.setNome(rs.getString("nome"));
+			
+			Pais p = new PaisDAO().pesquisarPorID(rs.getInt("pais_id"));
+			
+			e.setPais(p);
+			eList.add(e);
 		}
 		ps.close();
 		return eList;

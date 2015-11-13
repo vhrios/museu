@@ -8,9 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Autor;
+import entity.Instituicao;
 import entity.Obra;
 
-public class ObraDAO {
+public class ObraDAO implements IObra{
 
 	/*
 	 * private int id;
@@ -37,10 +39,7 @@ public class ObraDAO {
 		c = iC.connect();
 	}
 
-	public ObraDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Obra o) throws SQLException {
 		PreparedStatement ps;
 		if (o.getId() == 0) {
@@ -48,7 +47,9 @@ public class ObraDAO {
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, o.getTitulo());
 			ps.setString(2, o.getApelido());
-			ps.setString(3, o.getData());
+			ps.setInt(3, o.getDia());
+			ps.setInt(3, o.getMes());
+			ps.setInt(3, o.getAno());
 			ps.setString(4, o.getPeriodo());
 			ps.setFloat(5, o.getAltura());
 			ps.setFloat(6, o.getLargura());
@@ -65,7 +66,9 @@ public class ObraDAO {
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, o.getTitulo());
 			ps.setString(2, o.getApelido());
-			ps.setString(3, o.getData());
+			ps.setInt(3, o.getDia());
+			ps.setInt(3, o.getMes());
+			ps.setInt(3, o.getAno());
 			ps.setString(4, o.getPeriodo());
 			ps.setFloat(5, o.getAltura());
 			ps.setFloat(6, o.getLargura());
@@ -97,6 +100,7 @@ public class ObraDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Obra o) throws SQLException {
 		if (o.getId() != 0) {
 			String sql = "DELETE obra WHERE id = ?";
@@ -114,6 +118,7 @@ public class ObraDAO {
 		throw new SQLException("Falha na atualização da Obra, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Obra pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT titulo, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tipo, movimento FROM obra WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -127,7 +132,9 @@ public class ObraDAO {
 			o.setId(id);
 			o.setTitulo(rs.getString("titulo"));
 			o.setApelido(rs.getString("apelido"));
-			o.setData(rs.getString("data"));
+			o.setDia(rs.getInt("dia"));
+			o.setMes(rs.getInt("mes"));
+			o.setAno(rs.getInt("ano"));
 			o.setPeriodo(rs.getString("periodo"));
 			o.setAltura(rs.getFloat("altura"));
 			o.setLargura(rs.getFloat("largura"));
@@ -146,6 +153,7 @@ public class ObraDAO {
 		return o;
 	}
 
+	@Override
 	public Obra pesquisarPorTitulo(String titulo) throws SQLException {
 		String sql = "SELECT id, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor, instituicao, categoria, tipo, movimento FROM obra WHERE titulo = '?'";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -159,7 +167,9 @@ public class ObraDAO {
 			o.setId(rs.getInt("id"));
 			o.setTitulo(titulo);
 			o.setApelido(rs.getString("apelido"));
-			o.setData(rs.getString("data"));
+			o.setDia(rs.getInt("dia"));
+			o.setMes(rs.getInt("mes"));
+			o.setAno(rs.getInt("ano"));
 			o.setPeriodo(rs.getString("periodo"));
 			o.setAltura(rs.getFloat("altura"));
 			o.setLargura(rs.getFloat("largura"));
@@ -178,6 +188,7 @@ public class ObraDAO {
 		return o;
 	}
 
+	@Override
 	public List<Obra> carregarTodos() throws SQLException {
 		String sql = "SELECT id, titulo, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor, instituicao, categoria, tipo, movimento FROM obra";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -187,12 +198,30 @@ public class ObraDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			oList.add(new Obra(rs.getInt("id"), rs.getString("titulo"), rs.getString("apelido"), rs.getString("data"),
-					rs.getString("periodo"), rs.getFloat("altura"), rs.getFloat("largura"), rs.getFloat("profundidade"),
-					rs.getDouble("valor"), rs.getString("biografia"),
-					new AutorDAO().pesquisarPorID(rs.getInt("autor_id")),
-					new InstituicaoDAO().pesquisarPorID(rs.getInt("autor_id")), rs.getString("categoria"),
-					rs.getString("tipo"), rs.getString("movimento")));
+			Obra o = new Obra();
+			o.setId(rs.getInt("id"));
+			o.setTitulo(rs.getString("titulo"));
+			o.setApelido(rs.getString("apelido"));
+			o.setDia(rs.getInt("dia"));
+			o.setMes(rs.getInt("mes"));
+			o.setAno(rs.getInt("ano"));
+			o.setPeriodo(rs.getString("periodo"));
+			o.setAltura(rs.getFloat("altura"));
+			o.setLargura(rs.getFloat("largura"));
+			o.setProfundidade(rs.getFloat("profundidade"));
+			o.setValor(rs.getDouble("valor"));
+			o.setBiografia(rs.getString("biografia"));
+			
+			Autor a = new AutorDAO().pesquisarPorID(rs.getInt("autor_id"));
+			o.setAutor(a);
+			
+			Instituicao i = new InstituicaoDAO().pesquisarPorID(rs.getInt("instituicao_id"));
+			o.setInstituicao(i);
+			
+			o.setCategoria(rs.getString("categoria"));
+			o.setTipo(rs.getString("tipo"));
+			o.setMovimento(rs.getString("movimento"));
+			oList.add(o);
 		}
 
 		ps.close();

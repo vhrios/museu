@@ -1,33 +1,7 @@
 package entity;
 
-public class Atividade {
+public enum Atividade {
 
-	private int id;
-	private String nome;
-
-	public Atividade(int id, String nome) {
-		this.id = id;
-		this.nome = nome;
-	}
-
-	public Atividade() {
-		this(0, "");
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+	Arquitetura, Arte_Digital, Artes_Plásticas, Cinema,	Desenho, Pintura, Escultura, Graffiti, Fotografia, Literatura, Música;
 
 }

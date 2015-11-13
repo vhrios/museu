@@ -2,8 +2,6 @@ package boundary;
 
 
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.ParseException;
 
 import javax.swing.ButtonGroup;
@@ -12,14 +10,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import control.VisitanteControl;
-import entity.Visitante;
-
-public class TelaUsuario implements ActionListener{
+public class TelaUsuario /*implements ActionListener*/{
 
 	private JFrame frmRegistraVisitante;
 	private JTextField txtNome;
@@ -214,7 +208,7 @@ public class TelaUsuario implements ActionListener{
 		btnSalvar.setIcon(new ImageIcon(TelaUsuario.class.getResource("/icon/img-salvar.png")));
 		btnSalvar.setBounds(536, 325, 102, 38);
 		frmRegistraVisitante.getContentPane().add(btnSalvar);
-		
+		/*
 		btnPesquisa.addActionListener(this);
 		btnSalvar.addActionListener(this);
 		btnVoltar.addActionListener(this);
@@ -222,10 +216,10 @@ public class TelaUsuario implements ActionListener{
 		rdbtnCpf.addActionListener(this);
 		rdbtnRg.addActionListener(this);
 		rdbtnPassaporte.addActionListener(this);
-		
+		*/
 	}
 
-	@Override
+/*	@Override
 	public void actionPerformed(ActionEvent e) {
 		Visitante v = new Visitante();
 		String cmd = e.getActionCommand();
@@ -250,10 +244,10 @@ public class TelaUsuario implements ActionListener{
 			}
 		}
 		if (rdbtnMasculino.isSelected()) {
-			v.setSexo("m");
+			v.setSexo(true);
 		}else{
 			if (rdbtnFeminino.isSelected()) {
-				v.setSexo("f");
+				v.setSexo(false);
 			}
 		}
 		
@@ -264,18 +258,12 @@ public class TelaUsuario implements ActionListener{
 					System.out.println("Passou da validação");
 					v = preencheObjeto();
 					System.out.println("Chama o control  insereVisitante()");
-					VisitanteControl vc = new VisitanteControl();
-					vc.insereVisitante(v);
+					VisitanteController vc = new VisitanteController();
+					vc.salvaVisitante(v);
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
 			}
-		}
-		
-		if ("".equals(cmd)) {
-			VisitanteControl vc = new VisitanteControl();
-			vc.consultaVisitantePeloNome(txtNome.getText());
-			preencheTela();
 		}
 		
 		if ("Voltar".equals(cmd)) {
@@ -283,10 +271,10 @@ public class TelaUsuario implements ActionListener{
 		}
 	}
 	
-	public Visitante preencheObjeto(){
+/*	public Visitante preencheObjeto(){
 		System.out.println("Entrou no preencheObjeto()");
 		Visitante v = new Visitante();
-		v.setNome(txtNome.getText());
+		v.setIdade(Integer.parseInt(txtNome.getText()));
 		v.setDtNasc(txtDataNasc.getText());
 		System.out.println(v.getDtNasc());
 		v.setNaturalidade(txtNaturalidade.getText());
@@ -344,7 +332,5 @@ public class TelaUsuario implements ActionListener{
 				rdbtnPassaporte.setSelected(true);
 			}
 		}
-		
+*/	
 	}
-
-}

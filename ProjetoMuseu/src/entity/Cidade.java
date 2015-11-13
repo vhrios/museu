@@ -6,16 +6,6 @@ public class Cidade {
 	private String nome;
 	private Estado estado;
 
-	public Cidade(int id, String nome, Estado estado) {
-		this.id = id;
-		this.nome = nome;
-		this.estado = estado;
-	}
-
-	public Cidade() {
-		this(0, "", new Estado());
-	}
-
 	public int getId() {
 		return id;
 	}

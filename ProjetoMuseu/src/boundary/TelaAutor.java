@@ -1,23 +1,16 @@
 package boundary;
 
-import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import entity.Autor;
-
-import javax.swing.JTextArea;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JScrollBar;
 
 public class TelaAutor {
 
@@ -35,9 +28,6 @@ public class TelaAutor {
 	private JLabel lblMaximo;
 	private JButton btnCadastrar;
 	private JButton btnVoltar;
-	
-	
-	
 
 	/**
 	 * Launch the application.
@@ -157,19 +147,19 @@ public class TelaAutor {
 		
 		
 		String nome="";
-		String nacionalidade="";
-		String areaAtiv="";
+		//String nacionalidade="";
+		//String areaAtiv="";
 		String descricao="";
 		
 		nome= txtNome.getText();
-		nacionalidade=txtNacionalidade.getText();
-		areaAtiv=(String) cmbArea.getSelectedItem();
+		//nacionalidade=txtNacionalidade.getText();
+		//areaAtiv=(String) cmbArea.getSelectedItem();
 		descricao=txtDescricao.getText();
 		
 		
-		autor.setNomeAutor(nome);
-		autor.setNacionalidade(nacionalidade);
-		autor.setAreaAtividade(areaAtiv);
+		autor.setNome(nome);
+		//autor.setNacionalidade(nacionalidade);
+		//autor.setAreaAtividade(areaAtiv);
 		autor.setDescricao(descricao);
 		
 		return autor;

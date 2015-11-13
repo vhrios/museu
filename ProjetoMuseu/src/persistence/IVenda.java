@@ -9,8 +9,6 @@ public interface IVenda {
 
 	public boolean manter(Venda v) throws SQLException;
 
-	public boolean apagar(Venda v) throws SQLException;
-
 	public Venda pesquisarPorID(int id) throws SQLException;
 
 	public List<Venda> carregarTodos() throws SQLException;

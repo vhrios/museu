@@ -19,10 +19,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 		c = iC.connect();
 	}
 
-	public EmprestimoObraDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(List<Obra> obras, Emprestimo emprestimo) throws SQLException {
 
 		String sql = "DELETE emprestimo_obra WHERE emprestimo_id = ?";
@@ -51,6 +48,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 		return false;
 	}
 
+	@Override
 	public boolean apagar(List<Obra> obras, Emprestimo emprestimo) throws SQLException {
 		if (emprestimo.getId() != 0) {
 			String sql = "DELETE emprestimo_obra WHERE emprestimo_id = ?";
@@ -68,6 +66,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 		throw new SQLException("Falha na atualização do Emprestimo, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public List<Obra> pesquisarPorEmprestimo(int i) throws SQLException {
 		String sql = "SELECT obra_id FROM emprestimo_obra WHERE emprestimo_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -78,7 +77,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new ObraDAO(this.c).pesquisarPorID(rs.getInt("id")));
+			aList.add(new ObraDAO().pesquisarPorID(rs.getInt("id")));
 		}
 		ps.close();
 		return aList;

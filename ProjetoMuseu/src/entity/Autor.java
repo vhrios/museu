@@ -6,31 +6,21 @@ public class Autor {
 
 	private int id;
 	private String nome;
-	private String dataNasc;
-	private String dataObito;
-	private String iniAtividade;
-	private String fimAtividade;
+	private int diaN;
+	private int mesN;
+	private int anoN;
+	private int diaM;
+	private int mesM;
+	private int anoM;
+	private int diaIniAtv;
+	private int mesIniAtv;
+	private int anoIniAtv;
+	private int diaFimAtv;
+	private int mesFimAtv;
+	private int anoFimAtv;
 	private String descricao;
-	private Pais pais;
-
-	private List<Atividade> atividades;
-
-	public Autor(int id, String nome, String dataNasc, String dataObito, String iniAtividade, String fimAtividade,
-			String descricao, Pais pais, List<Atividade> atividades) {
-		this.id = id;
-		this.nome = nome;
-		this.dataNasc = dataNasc;
-		this.dataObito = dataObito;
-		this.iniAtividade = iniAtividade;
-		this.fimAtividade = fimAtividade;
-		this.descricao = descricao;
-		this.pais = pais;
-		this.setAtividades(atividades);
-	}
-
-	public Autor() {
-		this(0, "", "", "", "", "", "", new Pais(), null);
-	}
+	private String pais;
+	private List<String> atividades;
 
 	public int getId() {
 		return id;
@@ -48,36 +38,100 @@ public class Autor {
 		this.nome = nome;
 	}
 
-	public String getDataNasc() {
-		return dataNasc;
+	public int getDiaN() {
+		return diaN;
 	}
 
-	public void setDataNasc(String dataNasc) {
-		this.dataNasc = dataNasc;
+	public void setDiaN(int diaN) {
+		this.diaN = diaN;
 	}
 
-	public String getDataObito() {
-		return dataObito;
+	public int getMesN() {
+		return mesN;
 	}
 
-	public void setDataObito(String dataObito) {
-		this.dataObito = dataObito;
+	public void setMesN(int mesN) {
+		this.mesN = mesN;
 	}
 
-	public String getIniAtividade() {
-		return iniAtividade;
+	public int getAnoN() {
+		return anoN;
 	}
 
-	public void setIniAtividade(String iniAtividade) {
-		this.iniAtividade = iniAtividade;
+	public void setAnoN(int anoN) {
+		this.anoN = anoN;
 	}
 
-	public String getFimAtividade() {
-		return fimAtividade;
+	public int getDiaM() {
+		return diaM;
 	}
 
-	public void setFimAtividade(String fimAtividade) {
-		this.fimAtividade = fimAtividade;
+	public void setDiaM(int diaM) {
+		this.diaM = diaM;
+	}
+
+	public int getMesM() {
+		return mesM;
+	}
+
+	public void setMesM(int mesM) {
+		this.mesM = mesM;
+	}
+
+	public int getAnoM() {
+		return anoM;
+	}
+
+	public void setAnoM(int anoM) {
+		this.anoM = anoM;
+	}
+
+	public int getDiaIniAtv() {
+		return diaIniAtv;
+	}
+
+	public void setDiaIniAtv(int diaIniAtv) {
+		this.diaIniAtv = diaIniAtv;
+	}
+
+	public int getMesIniAtv() {
+		return mesIniAtv;
+	}
+
+	public void setMesIniAtv(int mesIniAtv) {
+		this.mesIniAtv = mesIniAtv;
+	}
+
+	public int getAnoIniAtv() {
+		return anoIniAtv;
+	}
+
+	public void setAnoIniAtv(int anoIniAtv) {
+		this.anoIniAtv = anoIniAtv;
+	}
+
+	public int getDiaFimAtv() {
+		return diaFimAtv;
+	}
+
+	public void setDiaFimAtv(int diaFimAtv) {
+		this.diaFimAtv = diaFimAtv;
+	}
+
+	public int getMesFimAtv() {
+		return mesFimAtv;
+	}
+
+	public void setMesFimAtv(int mesFimAtv) {
+		this.mesFimAtv = mesFimAtv;
+	}
+
+	public int getAnoFimAtv() {
+		return anoFimAtv;
+	}
+
+	public void setAnoFimAtv(int anoFimAtv) {
+		this.anoFimAtv = anoFimAtv;
 	}
 
 	public String getDescricao() {
@@ -88,19 +142,19 @@ public class Autor {
 		this.descricao = descricao;
 	}
 
-	public Pais getPais() {
+	public String getPais() {
 		return pais;
 	}
 
-	public void setPais(Pais pais) {
+	public void setPais(String pais) {
 		this.pais = pais;
 	}
 
-	public List<Atividade> getAtividades() {
+	public List<String> getAtividades() {
 		return atividades;
 	}
 
-	public void setAtividades(List<Atividade> atividades) {
+	public void setAtividades(List<String> atividades) {
 		this.atividades = atividades;
 	}
 

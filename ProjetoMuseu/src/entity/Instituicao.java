@@ -15,26 +15,6 @@ public class Instituicao {
 	private Estado estado;
 	private Cidade cidade;
 
-	public Instituicao(int id, String nome, String endereco, String numero, String cep, String contato, String cargo,
-			String telefone, String email, Pais pais, Estado estado, Cidade cidade) {
-		this.id = id;
-		this.nome = nome;
-		this.endereco = endereco;
-		this.numero = numero;
-		this.cep = cep;
-		this.contato = contato;
-		this.cargo = cargo;
-		this.telefone = telefone;
-		this.email = email;
-		this.pais = pais;
-		this.estado = estado;
-		this.cidade = cidade;
-	}
-
-	public Instituicao() {
-		this(0, "", "", "", "", "", "", "", "", new Pais(), new Estado(), new Cidade());
-	}
-
 	public int getId() {
 		return id;
 	}

@@ -7,20 +7,7 @@ public class Visitante {
 	private String escolaridade;
 	private String locomocao;
 	private int idade;
-	private Pais pais;
-
-	public Visitante(int id, boolean sexo, String escolaridade, String locomocao, int idade, Pais pais) {
-		this.id = id;
-		this.sexo = sexo;
-		this.escolaridade = escolaridade;
-		this.locomocao = locomocao;
-		this.idade = idade;
-		this.pais = pais;
-	}
-
-	public Visitante() {
-		this(0, false, "", "", 0, new Pais());
-	}
+	private String pais;
 
 	public int getId() {
 		return id;
@@ -62,11 +49,11 @@ public class Visitante {
 		this.idade = idade;
 	}
 
-	public Pais getPais() {
+	public String getPais() {
 		return pais;
 	}
 
-	public void setPais(Pais pais) {
+	public void setPais(String pais) {
 		this.pais = pais;
 	}
 

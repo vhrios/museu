@@ -15,11 +15,8 @@ public class UsuarioDAO implements IUsuario{
 		IConexaoMySQL iC = new ConexaoMySQL();
 		c = iC.connect();
 	}
-
-	public UsuarioDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	
+	@Override
 	public Usuario validaLogin(Usuario u) throws SQLException {
 		String sql = "select nome, gerente from usuario where login = ? and senha = ?";
 		PreparedStatement ps = c.prepareStatement(sql);

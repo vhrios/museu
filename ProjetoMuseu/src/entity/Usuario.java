@@ -8,18 +8,6 @@ public class Usuario {
 	private String login;
 	private String senha;
 
-	public Usuario(String nome, String cpf, boolean gerente, String login, String senha) {
-		this.nome = nome;
-		this.cpf = cpf;
-		this.gerente = gerente;
-		this.login = login;
-		this.senha = senha;
-	}
-
-	public Usuario() {
-		this("", "", false, "", "");
-	}
-
 	public String getNome() {
 		return nome;
 	}

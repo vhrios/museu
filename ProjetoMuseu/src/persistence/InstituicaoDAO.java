@@ -8,9 +8,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Cidade;
+import entity.Estado;
 import entity.Instituicao;
+import entity.Pais;
 
-public class InstituicaoDAO {
+public class InstituicaoDAO implements IInstituicao{
 
 	/*
 	 * private int id;
@@ -34,10 +37,7 @@ public class InstituicaoDAO {
 		c = iC.connect();
 	}
 
-	public InstituicaoDAO(Connection c) throws SQLException {
-		this.c = c;
-	}
-
+	@Override
 	public boolean manter(Instituicao i) throws SQLException {
 		PreparedStatement ps;
 		if (i.getId() == 0) {
@@ -88,6 +88,7 @@ public class InstituicaoDAO {
 		}
 	}
 
+	@Override
 	public boolean apagar(Instituicao i) throws SQLException {
 		if (i.getId() != 0) {
 			String sql = "DELETE instituicao WHERE id = ?";
@@ -105,6 +106,7 @@ public class InstituicaoDAO {
 		throw new SQLException("Falha na atualização da Instituição, ID não recebido no parâmetro.");
 	}
 
+	@Override
 	public Instituicao pesquisarPorID(int id) throws SQLException {
 		String sql = "SELECT nome, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM instituicao WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -134,6 +136,7 @@ public class InstituicaoDAO {
 		return i;
 	}
 
+	@Override
 	public Instituicao pesquisarPorNome(String nome) throws SQLException {
 		String sql = "SELECT id, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM instituicao WHERE nome = '?'";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -153,9 +156,12 @@ public class InstituicaoDAO {
 			i.setCargo(rs.getString("cargo"));
 			i.setTelefone(rs.getString("telefone"));
 			i.setEmail(rs.getString("email"));
-			i.setPais(new PaisDAO().pesquisarPorID(rs.getInt("pais")));
-			i.setEstado(new EstadoDAO().pesquisarPorID(rs.getInt("estado")));
-			i.setCidade(new CidadeDAO().pesquisarPorID(rs.getInt("cidade")));
+			Pais p = new PaisDAO().pesquisarPorID(rs.getInt("pais"));
+			i.setPais(p);
+			Estado e = new EstadoDAO().pesquisarPorID(rs.getInt("estado"));
+			i.setEstado(e);
+			Cidade c = new CidadeDAO().pesquisarPorID(rs.getInt("cidade"));
+			i.setCidade(c);
 		} else {
 			i = null;
 		}
@@ -163,6 +169,7 @@ public class InstituicaoDAO {
 		return i;
 	}
 
+	@Override
 	public List<Instituicao> carregarTodos() throws SQLException {
 		String sql = "SELECT id, nome, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM atividade";
 		PreparedStatement ps = c.prepareStatement(sql);
@@ -172,11 +179,24 @@ public class InstituicaoDAO {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			iList.add(new Instituicao(rs.getInt("id"), rs.getString("nome"), rs.getString("endereco"),
-					rs.getString("numero"), rs.getString("cep"), rs.getString("contato"), rs.getString("cargo"),
-					rs.getString("telefone"), rs.getString("email"), new PaisDAO().pesquisarPorID(rs.getInt("pais")),
-					new EstadoDAO().pesquisarPorID(rs.getInt("estado")),
-					new CidadeDAO().pesquisarPorID(rs.getInt("cidade"))));
+			Instituicao i = new Instituicao();
+			i.setId(rs.getInt("id"));
+			i.setNome(rs.getString("nome"));
+			i.setEndereco(rs.getString("endereco"));
+			i.setNumero(rs.getString("numero"));
+			i.setCep(rs.getString("cep"));
+			i.setContato(rs.getString("contato"));
+			i.setCargo(rs.getString("cargo"));
+			i.setTelefone(rs.getString("telefone"));
+			i.setEmail(rs.getString("email"));
+			Pais p = new PaisDAO().pesquisarPorID(rs.getInt("pais"));
+			i.setPais(p);
+			Estado e = new EstadoDAO().pesquisarPorID(rs.getInt("estado"));
+			i.setEstado(e);
+			Cidade c = new CidadeDAO().pesquisarPorID(rs.getInt("cidade"));
+			i.setCidade(c);
+			
+			iList.add(i);
 		}
 
 		ps.close();
