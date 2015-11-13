@@ -1,10 +1,17 @@
 package persistence;
 
-public class AutorAtividadeDAO /*implements IAutorAtividade*/{
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-	/*
-	 * private Atividade atividade; private Autor autor;
-	 
+import entity.Atividade;
+import entity.Autor;
+
+public class AutorAtividadeDAO implements IAutorAtividade{
 
 	private Connection c;
 
@@ -14,36 +21,21 @@ public class AutorAtividadeDAO /*implements IAutorAtividade*/{
 	}
 
 	@Override
-	public boolean manter(List<Atividade> atividades, Autor autor) throws SQLException {
-
-		String sql = "DELETE autor_atividade WHERE autor_id = ?";
-		PreparedStatement ps = c.prepareStatement(sql);
-		ps.setInt(1, autor.getId());
-		ps.executeUpdate();
-
+	public boolean manter(List<String> atividades, Autor autor) throws SQLException {
 		if (atividades.size() != 0) {
-			sql = "INSERT INTO autor_atividade (atividade_id, autor_id) VALUES (?,?)";
-			ps = c.prepareStatement(sql, Statement.SUCCESS_NO_INFO);
+			String sql = "INSERT INTO autor_atividade (atividade_id, autor_id) VALUES (?,?)";
+			PreparedStatement ps = c.prepareStatement(sql, Statement.SUCCESS_NO_INFO);
+			ps.setInt(2, autor.getId());
 
-			int i = 0;
-			for (Atividade atividade : atividades) {
-				ps.setInt(1, atividade.getId());
-				ps.setInt(2, autor.getId());
-				ps.addBatch();
-
-				i++;
-
-				if (i % 1000 == 0 || i == atividades.size()) {
-					ps.executeBatch();
-				}
-			}
 			return true;
 		}
-		return false;
+		else{
+			return false;
+		}
 	}
 
 	@Override
-	public boolean apagar(List<Atividade> atividades, Autor autor) throws SQLException {
+	public boolean apagar(List<String> atividades, Autor autor) throws SQLException {
 		if (autor.getId() != 0) {
 			String sql = "DELETE autor_atividade WHERE autor_id = ?";
 			PreparedStatement ps = c.prepareStatement(sql);
@@ -71,10 +63,11 @@ public class AutorAtividadeDAO /*implements IAutorAtividade*/{
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new AtividadeDAO(this.c).pesquisarPorID(rs.getInt("id")));
+			
+			aList.add(null);
 		}
 		ps.close();
 		return aList;
 	}
-*/
+
 }

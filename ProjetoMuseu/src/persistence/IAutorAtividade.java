@@ -13,9 +13,9 @@ public interface IAutorAtividade {
 	 * private Autor autor;
 	 */
 
-	public boolean manter(List<Atividade> atividades, Autor autor) throws SQLException;
+	public boolean manter(List<String> atividades, Autor autor) throws SQLException;
 
-	public boolean apagar(List<Atividade> atividades, Autor autor) throws SQLException;
+	public boolean apagar(List<String> atividades, Autor autor) throws SQLException;
 
 	public List<Atividade> pesquisarPorAutor(int i) throws SQLException;
 

@@ -146,6 +146,7 @@ public class AutorDAO implements IAutor{
 			
 			a.setDescricao(rs.getString("descricao"));
 			a.setPais(rs.getString("Pais"));
+			
 			a.setAtividades();
 		} else {
 			a = null;
