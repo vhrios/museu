@@ -288,6 +288,8 @@ public class TelaVisitante implements ActionListener{
 			JOptionPane.showMessageDialog(null,
 					"Visitante(s) registrado(s) com Sucesso!", "Sucesso",
 					JOptionPane.INFORMATION_MESSAGE);
+			limpaTudo();
+			modelo.removeRow(0);
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"Não há Visitante(s) para ser(em) \n                registrado(s)", "Alerta",
