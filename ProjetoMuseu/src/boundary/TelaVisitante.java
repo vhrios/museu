@@ -3,8 +3,11 @@ package boundary;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,22 +23,24 @@ import javax.swing.table.DefaultTableModel;
 
 import controller.ControllerTabela;
 import controller.VisitanteController;
+import entity.Exposicao;
 import entity.Locomocao;
 import entity.NivelAcademico;
 import entity.Paises;
 import entity.Visitante;
+import persistence.IIngresso;
+import persistence.IngressoImpl;
 
 public class TelaVisitante implements ActionListener{
 
 	private JFrame frameVisitante;
 	private JTextField txtData;
-	private JTextField txtExposicao;
 	private JTable table;
 	private JTextField txtIdade;
 	private JButton btnSalvar, btnAdicionar, btnVoltar, btnLimpar;
 	private JRadioButton rdbtnFem_, rdbtnMasc_;
 	@SuppressWarnings("rawtypes")
-	private JComboBox cmbEscolaridade, cmbLocomocao, cmbPais;
+	private JComboBox cmbEscolaridade, cmbLocomocao, cmbPais, cmbExposicao;
 	DefaultTableModel modelo;
 	
 	/**
@@ -129,12 +134,6 @@ public class TelaVisitante implements ActionListener{
 		frameVisitante.getContentPane().add(txtData);
 		txtData.setColumns(10);
 		
-		txtExposicao = new JTextField();
-		txtExposicao.setEditable(false);
-		txtExposicao.setBounds(340, 23, 332, 20);
-		frameVisitante.getContentPane().add(txtExposicao);
-		txtExposicao.setColumns(10);
-		
 		JLabel lblIdade = new JLabel("Idade :");
 		lblIdade.setBounds(340, 87, 46, 14);
 		frameVisitante.getContentPane().add(lblIdade);
@@ -174,10 +173,39 @@ public class TelaVisitante implements ActionListener{
 		cmbPais.setBounds(54, 171, 174, 20);
 		frameVisitante.getContentPane().add(cmbPais);
 		
+		cmbExposicao = new JComboBox();
+		cmbExposicao.setBounds(340, 23, 388, 20);
+		frameVisitante.getContentPane().add(cmbExposicao);
+		java.sql.Date hoje = null;
+		String dataHoje = txtData.getText();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			 hoje = new java.sql.Date(sdf.parse(dataHoje).getTime());
+		} catch (ParseException e2) {
+			e2.printStackTrace();
+		}
+		List<Exposicao> lista = null;
+		IIngresso idao = new IngressoImpl();
+		try {
+			lista = idao.consultaNomeExposicao(hoje);
+			if (lista != null){
+				cmbExposicao.removeAllItems();
+				for (Exposicao exposicao : lista){
+					cmbExposicao.addItem(exposicao.getHorario() + " | " + exposicao.getTituloExibicao());
+				}
+			} else {
+				cmbExposicao.addItem("---------- Não Exposição ------------");
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		btnAdicionar.addActionListener(this);
 		btnSalvar.addActionListener(this);
 		btnVoltar.addActionListener(this);
 		btnLimpar.addActionListener(this);
+	
 	}
 
 	@Override
@@ -296,4 +324,5 @@ public class TelaVisitante implements ActionListener{
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+
 }
