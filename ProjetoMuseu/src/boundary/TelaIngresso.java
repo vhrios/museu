@@ -4,11 +4,8 @@ package boundary;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -21,18 +18,16 @@ import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
-import controller.IngressoController;
-import entity.Exposicao;
 import entity.Ingresso;
 
-public class TelaIngresso implements ActionListener {
+public class TelaIngresso {
 
 	private JFrame frmIngresso;
 	private JTextField txtEvento;
 	private JTextField txtDataInicio;
 	private JTextField txtDataFim;
 	private JTextField txtQtdIngresso;
-	private JButton btnSalvar, btnVoltar, btnNovo;
+	private JButton btnSalvar, btnVoltar;
 	private JTextField txtHorario;
 	private JRadioButton rdbtnNao, rdbtnSim;
 	private JFormattedTextField txtSemana, txtFds;
@@ -190,6 +185,12 @@ public class TelaIngresso implements ActionListener {
 		frmIngresso.getContentPane().add(txtFds);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				validarCampos();
+				
+			}
+		});
 		btnSalvar.setBounds(546, 223, 89, 23);
 		frmIngresso.getContentPane().add(btnSalvar);
 
@@ -197,35 +198,17 @@ public class TelaIngresso implements ActionListener {
 		btnVoltar.setBounds(10, 223, 89, 23);
 		frmIngresso.getContentPane().add(btnVoltar);
 
-		btnNovo = new JButton("Novo");
-		btnNovo.setBounds(288, 223, 89, 23);
+		JButton btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limparCampos();
+			}
+		});
+		btnNovo.setBounds(421, 223, 89, 23);
 		frmIngresso.getContentPane().add(btnNovo);
-
-		JButton btnAlterar = new JButton("Alterar");
-		btnAlterar.setBounds(421, 223, 89, 23);
-		frmIngresso.getContentPane().add(btnAlterar);
-
-		btnVoltar.addActionListener(this);
-		btnSalvar.addActionListener(this);
-		btnNovo.addActionListener(this);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		if (cmd.equals("Voltar"))
-			frmIngresso.dispose();
-		if (cmd.equals("Salvar"))
-			validaCampos();
-		if (cmd.equals("Novo"))
-			limpaCampos();
-		if (cmd.equals("Alterar")){
-			
-		}
-//			salvaIngresso();
-	}
-
-	private void validaCampos() {
+	private void validarCampos() {
 		if (!"".equals(txtEvento.getText()) && !"".equals(txtDataInicio.getText()) && !"".equals(txtDataFim.getText())
 				&& !"".equals(txtHorario.getText()) && !"".equals(txtQtdIngresso.getText())
 				&& !"".equals(txtSemana.getText()) && !"".equals(txtDataFim.getText())) {
@@ -242,59 +225,19 @@ public class TelaIngresso implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Preencha Todos os Campos", "Alerta", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
-	public Exposicao salvaExposicao() {
-		
-		Exposicao e = new Exposicao();
-		
-		e.setTituloExibicao(txtEvento.getText().toString());
-		String dataInicio = txtDataInicio.getText();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			e.setDataInicio(sdf.parse(dataInicio));
-		} catch (ParseException e2) {
-			e2.printStackTrace();
-		}
-		String dataFim = txtDataFim.getText();
-		SimpleDateFormat sdf_ = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			e.setDataFim(sdf_.parse(dataFim));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-		SimpleDateFormat formatador = new SimpleDateFormat("HH:mm");
-		Date hora;
-		try {
-			hora = formatador.parse(txtHorario.getText());
-			Time time = new Time(hora.getTime());
-			e.setHorario(time);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-		if (rdbtnNao.isSelected()) {
-			e.setExibicaoEspecial(0);
-		} else {
-			if (rdbtnSim.isSelected()) {
-				e.setExibicaoEspecial(1);
-			}
-		}
-		
-		return e;
-		
-	}
 
 	public Ingresso salvaIngresso() {
 
 		Ingresso i = new Ingresso();
 		i.setLimiteIngresso(Integer.parseInt(txtQtdIngresso.getText()));
-		i.setPrecoSemana(Double.parseDouble(txtSemana.getText().replaceAll(",", ".")));
-		i.setPrecoFimDeSemana(Double.parseDouble(txtFds.getText().replaceAll(",", ".")));
+		i.setPrecoSemana(Float.parseFloat(txtSemana.getText().replaceAll(",", ".")));
+		i.setPrecoFimDeSemana(Float.parseFloat(txtFds.getText().replaceAll(",", ".")));
 
 		return i;
 	}
 
-	private void limpaCampos() {
-		
+	private void limparCampos() {
+
 		txtEvento.setText("");
 		txtDataInicio.setText("");
 		txtDataFim.setText("");
@@ -303,6 +246,6 @@ public class TelaIngresso implements ActionListener {
 		txtQtdIngresso.setText("");
 		txtSemana.setValue(null);
 		txtFds.setValue(null);
-		
+
 	}
 }

@@ -23,10 +23,9 @@ public class ConexaoMySQL implements IConexaoMySQL {
 		this.database = database;
 		this.connected = false;
 	}
-	
-	public ConexaoMySQL(){
-		this("127.0.0.1", "3306", "museu", "root", "root");
-		//port 3306
+
+	public ConexaoMySQL() {
+		this("localhost", "3306", "museu", "root", "root");
 	}
 
 	@Override
@@ -34,10 +33,10 @@ public class ConexaoMySQL implements IConexaoMySQL {
 		String url;
 		String userName = this.user;
 		String passName = this.pass;
-		url = "jdbc:mysql://" + this.host + ":" + this.port + ";databaseName=" + this.database;
+		url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database;
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("com.mysql.jdbc.Driver");
 			this.c = DriverManager.getConnection(url, userName, passName);
 			connected = true;
 		} catch (SQLException e) {
@@ -45,14 +44,6 @@ public class ConexaoMySQL implements IConexaoMySQL {
 			System.out.println(e.getMessage());
 			connected = false;
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			connected = false;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			connected = false;
-		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 			connected = false;
@@ -66,7 +57,7 @@ public class ConexaoMySQL implements IConexaoMySQL {
 		String url;
 		String userName = this.user;
 		String passName = this.pass;
-		url = "jdbc:sqlserver://" + this.host + ":" + this.port + ";databaseName=" + this.database;
+		url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database;
 
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();

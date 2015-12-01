@@ -8,26 +8,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.Cidade;
-import entity.Estado;
 import entity.Instituicao;
-import entity.Pais;
 
-public class InstituicaoDAO implements IInstituicao{
+public class InstituicaoDAO implements IInstituicao {
 
 	/*
-	 * private int id;
-	 * private String nome;
-	 * private String endereco;
-	 * private String numero;
-	 * private String cep;
-	 * private String contato;
-	 * private String cargo;
-	 * private String telefone;
-	 * private String email;
-	 * private Pais pais;
-	 * private Estado estado;
-	 * private Cidade cidade;
+	 * private int id; private String nome; private String endereco; private
+	 * String numero; private String cep; private String contato; private String
+	 * cargo; private String telefone; private String email; private Pais pais;
+	 * private Estado estado; private Cidade cidade;
 	 */
 
 	private Connection c;
@@ -41,7 +30,7 @@ public class InstituicaoDAO implements IInstituicao{
 	public boolean manter(Instituicao i) throws SQLException {
 		PreparedStatement ps;
 		if (i.getId() == 0) {
-			String sql = "INSERT INTO instituicao (nome, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO instituicao (nome, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, i.getNome());
 			ps.setString(2, i.getEndereco());
@@ -51,11 +40,11 @@ public class InstituicaoDAO implements IInstituicao{
 			ps.setString(6, i.getCargo());
 			ps.setString(7, i.getTelefone());
 			ps.setString(8, i.getEmail());
-			ps.setInt(9, i.getPais().getId());
-			ps.setInt(10, i.getEstado().getId());
-			ps.setInt(11, i.getCidade().getId());
+			ps.setString(9, i.getPais());
+			ps.setString(10, i.getEstado());
+			ps.setString(11, i.getCidade());
 		} else {
-			String sql = "UPDATE atividade SET nome = ?, endereco = ?, numero = ?, cep = ?, contato = ?, cargo = ?, telefone = ?, email = ?, pais_id = ?, estado_id = ?, cidade_id = ? WHERE id = ?";
+			String sql = "UPDATE atividade SET nome = ?, endereco = ?, numero = ?, cep = ?, contato = ?, cargo = ?, telefone = ?, email = ?, pais = ?, estado = ?, cidade = ? WHERE id = ?";
 			ps = c.prepareStatement(sql);
 			ps.setString(1, i.getNome());
 			ps.setString(2, i.getEndereco());
@@ -65,9 +54,9 @@ public class InstituicaoDAO implements IInstituicao{
 			ps.setString(6, i.getCargo());
 			ps.setString(7, i.getTelefone());
 			ps.setString(8, i.getEmail());
-			ps.setInt(9, i.getPais().getId());
-			ps.setInt(10, i.getEstado().getId());
-			ps.setInt(11, i.getCidade().getId());
+			ps.setString(9, i.getPais());
+			ps.setString(10, i.getEstado());
+			ps.setString(11, i.getCidade());
 			ps.setInt(12, i.getId());
 		}
 
@@ -126,9 +115,9 @@ public class InstituicaoDAO implements IInstituicao{
 			i.setCargo(rs.getString("cargo"));
 			i.setTelefone(rs.getString("telefone"));
 			i.setEmail(rs.getString("email"));
-			i.setPais(new PaisDAO().pesquisarPorID(rs.getInt("pais")));
-			i.setEstado(new EstadoDAO().pesquisarPorID(rs.getInt("estado")));
-			i.setCidade(new CidadeDAO().pesquisarPorID(rs.getInt("cidade")));
+			i.setPais(rs.getString("pais"));
+			i.setEstado(rs.getString("estado"));
+			i.setCidade(rs.getString("cidade"));
 		} else {
 			i = null;
 		}
@@ -156,12 +145,9 @@ public class InstituicaoDAO implements IInstituicao{
 			i.setCargo(rs.getString("cargo"));
 			i.setTelefone(rs.getString("telefone"));
 			i.setEmail(rs.getString("email"));
-			Pais p = new PaisDAO().pesquisarPorID(rs.getInt("pais"));
-			i.setPais(p);
-			Estado e = new EstadoDAO().pesquisarPorID(rs.getInt("estado"));
-			i.setEstado(e);
-			Cidade c = new CidadeDAO().pesquisarPorID(rs.getInt("cidade"));
-			i.setCidade(c);
+			i.setPais(rs.getString("pais"));
+			i.setEstado(rs.getString("estado"));
+			i.setCidade(rs.getString("cidade"));
 		} else {
 			i = null;
 		}
@@ -189,13 +175,10 @@ public class InstituicaoDAO implements IInstituicao{
 			i.setCargo(rs.getString("cargo"));
 			i.setTelefone(rs.getString("telefone"));
 			i.setEmail(rs.getString("email"));
-			Pais p = new PaisDAO().pesquisarPorID(rs.getInt("pais"));
-			i.setPais(p);
-			Estado e = new EstadoDAO().pesquisarPorID(rs.getInt("estado"));
-			i.setEstado(e);
-			Cidade c = new CidadeDAO().pesquisarPorID(rs.getInt("cidade"));
-			i.setCidade(c);
-			
+			i.setPais(rs.getString("pais"));
+			i.setEstado(rs.getString("estado"));
+			i.setCidade(rs.getString("cidade"));
+
 			iList.add(i);
 		}
 

@@ -21,7 +21,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import controller.ControllerTabela;
+import controller.TabelaController;
 import controller.VisitanteController;
 import entity.Exposicao;
 import entity.Locomocao;
@@ -149,7 +149,7 @@ public class TelaVisitante implements ActionListener{
 		scrollPane.setBounds(42, 267, 730, 242);
 		frameVisitante.getContentPane().add(scrollPane);
 		String[] cabecalho = {"Idade", "Sexo", "País", "Escolaridade", "Locomoção"};
-		modelo = new ControllerTabela(new Object[][]{}, cabecalho);
+		modelo = new TabelaController(new Object[][]{}, cabecalho);
 		
 		table = new JTable();
 		table.setModel(modelo);

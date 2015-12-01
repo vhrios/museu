@@ -11,9 +11,9 @@ public class Instituicao {
 	private String cargo;
 	private String telefone;
 	private String email;
-	private Pais pais;
-	private Estado estado;
-	private Cidade cidade;
+	private String pais;
+	private String estado;
+	private String cidade;
 
 	public int getId() {
 		return id;
@@ -87,27 +87,27 @@ public class Instituicao {
 		this.email = email;
 	}
 
-	public Pais getPais() {
+	public String getPais() {
 		return pais;
 	}
 
-	public void setPais(Pais pais) {
+	public void setPais(String pais) {
 		this.pais = pais;
 	}
 
-	public Estado getEstado() {
+	public String getEstado() {
 		return estado;
 	}
 
-	public void setEstado(Estado estado) {
+	public void setEstado(String estado) {
 		this.estado = estado;
 	}
 
-	public Cidade getCidade() {
+	public String getCidade() {
 		return cidade;
 	}
 
-	public void setCidade(Cidade cidade) {
+	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
 

@@ -1,18 +1,23 @@
 package persistence;
 
-public class AtividadeDAO /*implements IAtividade*/{
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class AtividadeDAO implements IAtividade{
 
 	/*
 	 * private int id; private String nome;
 	 */
-/*
+
 	private Connection c;
 
 	public AtividadeDAO() {
 		IConexaoMySQL iC = new ConexaoMySQL();
 		c = iC.connect();
 	}
-
+/*
 	@Override
 	public boolean manter(Atividade a) throws SQLException {
 		PreparedStatement ps;
@@ -81,27 +86,27 @@ public class AtividadeDAO /*implements IAtividade*/{
 		ps.close();
 		return a;
 	}
-
+*/
 	@Override
-	public Atividade pesquisarPorNome(String nome) throws SQLException {
-		String sql = "SELECT id FROM atividade WHERE nome = '?'";
+	public int pesquisarPorNome(String nome) throws SQLException {
+		String sql = "SELECT id FROM museu.atividade WHERE nome = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, nome);
 
-		Atividade a = new Atividade();
-
 		ResultSet rs = ps.executeQuery();
-
+		int id;
+		
 		if (rs.next()) {
-			a.setId(rs.getInt("id"));
-			a.setNome(nome);
+			id = rs.getInt("id");
 		} else {
-			a = null;
+			id = 0;
 		}
 		ps.close();
-		return a;
+		return id;
 	}
-
+	
+/*
+ * 
 	@Override
 	public List<Atividade> pesquisarPorAutor(Autor a) throws SQLException {
 		String sql = "SELECT id, nome FROM atividade AS a INNER JOIN autor_atividade AS aa ON a.id = aa.atividade_id WHERE aa.autor_id = ?";
@@ -142,5 +147,5 @@ public class AtividadeDAO /*implements IAtividade*/{
 		ps.close();
 		return aList;
 	}
-	*/
+*/	
 }

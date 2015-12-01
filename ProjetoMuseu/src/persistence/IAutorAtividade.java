@@ -3,7 +3,6 @@ package persistence;
 import java.sql.SQLException;
 import java.util.List;
 
-import entity.Atividade;
 import entity.Autor;
 
 public interface IAutorAtividade {
@@ -15,8 +14,8 @@ public interface IAutorAtividade {
 
 	public boolean manter(List<String> atividades, Autor autor) throws SQLException;
 
-	public boolean apagar(List<String> atividades, Autor autor) throws SQLException;
+	public boolean apagar(Autor autor) throws SQLException;
 
-	public List<Atividade> pesquisarPorAutor(int i) throws SQLException;
+	public List<String> pesquisarPorAutor(int i) throws SQLException;
 
 }

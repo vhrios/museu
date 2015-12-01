@@ -12,14 +12,8 @@ public interface IAtividade {
 	 * private String nome;
 	 */
 
-	public boolean manter(Atividade a) throws SQLException;
+	public int pesquisarPorNome(String nome) throws SQLException;
 
-	public boolean apagar(Atividade a) throws SQLException;
-
-	public Atividade pesquisarPorID(int id) throws SQLException;
-
-	public Atividade pesquisarPorNome(String nome) throws SQLException;
-
-	public List<Atividade> carregarTodos() throws SQLException;
+	//public List<Atividade> carregarTodos() throws SQLException;
 
 }

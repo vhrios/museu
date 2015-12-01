@@ -10,26 +10,15 @@ import java.util.List;
 
 import entity.Autor;
 
-public class AutorDAO implements IAutor{
+public class AutorDAO implements IAutor {
 
 	/*
-	 * private int id;
-	 * private String nome; 
-	 * private int diaN;
-	 * private int mesN;
-	 * private int anoN;
-	 * private int diaM;
-	 * private int mesM;
-	 * private int anoM;
-	 * private int diaIniAtv;
-	 * private int mesIniAtv;
-	 * private int anoIniAtv;
-	 * private int diaFimAtv;
-	 * private int mesFimAtv;
-	 * private int anoFimAtv;
-	 * private String descricao; 
-	 * private String pais;
-	 * private List<String> atividades;
+	 * private int id; private String nome; private int diaN; private int mesN;
+	 * private int anoN; private int diaM; private int mesM; private int anoM;
+	 * private int diaIniAtv; private int mesIniAtv; private int anoIniAtv;
+	 * private int diaFimAtv; private int mesFimAtv; private int anoFimAtv;
+	 * private String descricao; private String pais; private List<String>
+	 * atividades;
 	 */
 
 	private Connection c;
@@ -43,7 +32,7 @@ public class AutorDAO implements IAutor{
 	public boolean manter(Autor a) throws SQLException {
 		PreparedStatement ps;
 		if (a.getId() == 0) {
-			String sql = "INSERT INTO autor (nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id) VALUES (?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO museu.autor (nome, diaN, mesN, anoN, diaM, mesM, anoM, diaIniAtv, mesIniAtv, anoIniAtv, diaFimAtv, mesFimAtv, anoFimAtv, descricao, pais) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, a.getNome());
 			ps.setInt(2, a.getDiaN());
@@ -61,7 +50,7 @@ public class AutorDAO implements IAutor{
 			ps.setString(14, a.getDescricao());
 			ps.setString(15, a.getPais());
 		} else {
-			String sql = "UPDATE autor SET nome = ?, dataNasc = ?, dataObito = ?, iniAtividade = ?, fimAtividade = ?, descricao = ?, pais_id = ? WHERE id = ?";
+			String sql = "UPDATE museu.autor SET nome = ?, diaN = ?, mesN = ?, anoN = ?, diaM = ?, mesM = ?, anoM = ?, diaIniAtv = ?, mesIniAtv = ?, anoIniAtv = ?, diaFimAtv = ?, mesFimAtv = ?, anoFimAtv = ?, descricao = ?, pais = ? WHERE id = ?";
 			ps = c.prepareStatement(sql);
 			ps.setString(1, a.getNome());
 			ps.setInt(2, a.getDiaN());
@@ -80,9 +69,8 @@ public class AutorDAO implements IAutor{
 			ps.setString(15, a.getPais());
 			ps.setInt(16, a.getId());
 		}
-		
-		int linhasAfetadas = ps.executeUpdate();
 
+		int linhasAfetadas = ps.executeUpdate();
 		if (linhasAfetadas == 0) {
 			throw new SQLException("Falha na criação do Autor, sem linhas afetadas.");
 		}
@@ -102,7 +90,7 @@ public class AutorDAO implements IAutor{
 	@Override
 	public boolean apagar(Autor a) throws SQLException {
 		if (a.getId() != 0) {
-			String sql = "DELETE autor WHERE id = ?";
+			String sql = "DELETE FROM museu.autor WHERE id = ?;";
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setInt(1, a.getId());
 			int linhasAfetadas = ps.executeUpdate();
@@ -130,7 +118,7 @@ public class AutorDAO implements IAutor{
 		if (rs.next()) {
 			a.setId(rs.getInt("id"));
 			a.setNome(rs.getString("nome"));
-			
+
 			a.setDiaN(rs.getInt("diaN"));
 			a.setMesN(rs.getInt("mesN"));
 			a.setAnoN(rs.getInt("anoN"));
@@ -143,11 +131,12 @@ public class AutorDAO implements IAutor{
 			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
 			a.setMesFimAtv(rs.getInt("mesFimAtv"));
 			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
-			
+
 			a.setDescricao(rs.getString("descricao"));
 			a.setPais(rs.getString("Pais"));
-			
-			a.setAtividades();
+
+			AutorAtividadeDAO aa = new AutorAtividadeDAO();
+			a.setAtividades(aa.pesquisarPorAutor(a.getId()));
 		} else {
 			a = null;
 		}
@@ -157,7 +146,7 @@ public class AutorDAO implements IAutor{
 
 	@Override
 	public Autor pesquisarPorNome(String nome) throws SQLException {
-		String sql = "SELECT id, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor WHERE nome = '?'";
+		String sql = "SELECT id, nome, diaN, mesN, anoN, diaM, mesM, anoM, diaIniAtv, mesIniAtv, anoIniAtv, diaFimAtv, mesFimAtv, anoFimAtv, descricao, pais FROM museu.autor WHERE nome = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, nome);
 
@@ -168,7 +157,7 @@ public class AutorDAO implements IAutor{
 		if (rs.next()) {
 			a.setId(rs.getInt("id"));
 			a.setNome(rs.getString("nome"));
-			
+
 			a.setDiaN(rs.getInt("diaN"));
 			a.setMesN(rs.getInt("mesN"));
 			a.setAnoN(rs.getInt("anoN"));
@@ -181,10 +170,12 @@ public class AutorDAO implements IAutor{
 			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
 			a.setMesFimAtv(rs.getInt("mesFimAtv"));
 			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
-			
+
 			a.setDescricao(rs.getString("descricao"));
 			a.setPais(rs.getString("Pais"));
-			a.setAtividades();
+
+			AutorAtividadeDAO aa = new AutorAtividadeDAO();
+			a.setAtividades(aa.pesquisarPorAutor(a.getId()));
 		} else {
 			a = null;
 		}
@@ -205,7 +196,7 @@ public class AutorDAO implements IAutor{
 			Autor a = new Autor();
 			a.setId(rs.getInt("id"));
 			a.setNome(rs.getString("nome"));
-			
+
 			a.setDiaN(rs.getInt("diaN"));
 			a.setMesN(rs.getInt("mesN"));
 			a.setAnoN(rs.getInt("anoN"));
@@ -218,10 +209,13 @@ public class AutorDAO implements IAutor{
 			a.setDiaFimAtv(rs.getInt("diaFimAtv"));
 			a.setMesFimAtv(rs.getInt("mesFimAtv"));
 			a.setAnoFimAtv(rs.getInt("anoFimAtv"));
-			
+
 			a.setDescricao(rs.getString("descricao"));
 			a.setPais(rs.getString("Pais"));
-			a.setAtividades();
+
+			AutorAtividadeDAO aa = new AutorAtividadeDAO();
+			a.setAtividades(aa.pesquisarPorAutor(a.getId()));
+
 			aList.add(a);
 		}
 		ps.close();
