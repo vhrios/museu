@@ -19,7 +19,7 @@ public class UsuarioControle {
 			if (usu == null) {
 				JOptionPane.showMessageDialog(null, "Usuario não encontrado, \n ou não existe!");
 			} else {
-				TelaPrincipal tp = new TelaPrincipal();
+				TelaPrincipal tp = new TelaPrincipal(usu);
 				tp.main(null);
 			}
 		} catch (SQLException e) {

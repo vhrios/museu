@@ -34,7 +34,7 @@ public class TelaGrafico implements ActionListener {
 	private JFrame frmGrafico;
 	private List<Tupla<String, Integer>> lista;
 
-	public static void main(String[] args) {
+	public void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

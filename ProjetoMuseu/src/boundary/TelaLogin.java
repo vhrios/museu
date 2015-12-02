@@ -71,11 +71,11 @@ public class TelaLogin implements ActionListener{
 		frame.getContentPane().add(txtSenha);
 		
 		JButton btnEntrar = new JButton("Entrar");
-		btnEntrar.setBounds(292, 175, 89, 23);
+		btnEntrar.setBounds(283, 148, 89, 23);
 		frame.getContentPane().add(btnEntrar);
 		
 		JButton btnSair = new JButton("Sair");
-		btnSair.setBounds(10, 175, 89, 23);
+		btnSair.setBounds(15, 148, 89, 23);
 		frame.getContentPane().add(btnSair);
 		
 		btnEntrar.addActionListener(this);
