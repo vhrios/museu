@@ -3,9 +3,8 @@ package boundary;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,15 +20,14 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import controller.TabelaController;
+import controller.ControllerTabela;
+import controller.IngressoController;
 import controller.VisitanteController;
 import entity.Exposicao;
 import entity.Locomocao;
 import entity.NivelAcademico;
 import entity.Paises;
 import entity.Visitante;
-import persistence.IIngresso;
-import persistence.IngressoImpl;
 
 public class TelaVisitante implements ActionListener{
 
@@ -149,7 +147,7 @@ public class TelaVisitante implements ActionListener{
 		scrollPane.setBounds(42, 267, 730, 242);
 		frameVisitante.getContentPane().add(scrollPane);
 		String[] cabecalho = {"Idade", "Sexo", "País", "Escolaridade", "Locomoção"};
-		modelo = new TabelaController(new Object[][]{}, cabecalho);
+		modelo = new ControllerTabela(new Object[][]{}, cabecalho);
 		
 		table = new JTable();
 		table.setModel(modelo);
@@ -175,31 +173,17 @@ public class TelaVisitante implements ActionListener{
 		
 		cmbExposicao = new JComboBox();
 		cmbExposicao.setBounds(340, 23, 388, 20);
-		frameVisitante.getContentPane().add(cmbExposicao);
-		java.sql.Date hoje = null;
-		String dataHoje = txtData.getText();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			 hoje = new java.sql.Date(sdf.parse(dataHoje).getTime());
-		} catch (ParseException e2) {
-			e2.printStackTrace();
-		}
-		List<Exposicao> lista = null;
-		IIngresso idao = new IngressoImpl();
-		try {
-			lista = idao.consultaNomeExposicao(hoje);
-			if (lista != null){
-				cmbExposicao.removeAllItems();
-				for (Exposicao exposicao : lista){
-					cmbExposicao.addItem(exposicao.getHorario() + " | " + exposicao.getTituloExibicao());
-				}
-			} else {
-				cmbExposicao.addItem("---------- Não Exposição ------------");
+		IngressoController ic = new IngressoController();
+		List<Exposicao> listaExpo = new ArrayList<Exposicao>();
+		listaExpo = ic.nomeExpo(txtData.getText());
+		if (listaExpo != null) {
+			for (Exposicao e : listaExpo) {
+				cmbExposicao.addItem(e.getTituloExibicao() + "  -  " + e.getHora());
 			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} else {
+			cmbExposicao.addItem("Não há exposições para Hoje");
 		}
+		frameVisitante.getContentPane().add(cmbExposicao);
 		
 		btnAdicionar.addActionListener(this);
 		btnSalvar.addActionListener(this);

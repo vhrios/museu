@@ -2,6 +2,6 @@ package entity;
 
 public enum Locomocao {
 	
-	Selecione, Apé, Ônibus, Metrô, Veículo, Bicicleta, Outro;
+	Selecione, Ônibus, Metrô, Veículo, Bicicleta, Outro;
 
 }

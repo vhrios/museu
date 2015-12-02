@@ -1,68 +1,44 @@
 package entity;
 
+import java.util.Date;
+
 public class Venda {
 
-	private int id;
+	private Date data;
 	private int qtdInteiro;
-	private int qtdMeio;
-	private float valorTotal;
-	private String tipoPagamento;
-	private String nomeExposicao;
-	private boolean reserva;
-
-	public int getId() {
-		return id;
+	private int qtdMeia;
+	private double valorTotal;
+	private String formaPagamento;
+	
+	public Date getData() {
+		return data;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setData(Date data) {
+		this.data = data;
 	}
-
 	public int getQtdInteiro() {
 		return qtdInteiro;
 	}
-
 	public void setQtdInteiro(int qtdInteiro) {
 		this.qtdInteiro = qtdInteiro;
 	}
-
-	public int getQtdMeio() {
-		return qtdMeio;
+	public int getQtdMeia() {
+		return qtdMeia;
 	}
-
-	public void setQtdMeio(int qtdMeio) {
-		this.qtdMeio = qtdMeio;
+	public void setQtdMeia(int qtdMeia) {
+		this.qtdMeia = qtdMeia;
 	}
-
-	public float getValorTotal() {
+	public double getValorTotal() {
 		return valorTotal;
 	}
-
-	public void setValorTotal(float valorTotal) {
+	public void setValorTotal(double valorTotal) {
 		this.valorTotal = valorTotal;
 	}
-
-	public String getTipoPagamento() {
-		return tipoPagamento;
+	public String getFormaPagamento() {
+		return formaPagamento;
 	}
-
-	public void setTipoPagamento(String tipoPagamento) {
-		this.tipoPagamento = tipoPagamento;
+	public void setFormaPagamento(String formaPagamento) {
+		this.formaPagamento = formaPagamento;
 	}
-
-	public String getNomeExposicao() {
-		return nomeExposicao;
-	}
-
-	public void setNomeExposicao(String nomeExposicao) {
-		this.nomeExposicao = nomeExposicao;
-	}
-
-	public boolean isReverva() {
-		return reserva;
-	}
-
-	public void setReserva(boolean reserva) {
-		this.reserva = reserva;
-	}
+	
 }
