@@ -47,11 +47,11 @@ public class AutorController {
 	}
 
 	public boolean verificarAutor(Autor a) {
-		if (a.getNome() == null)
+		if (a.getNome() == null || a.getNome().isEmpty())
 			return false;
-		else if (a.getAtividades() == null)
+		else if (a.getAtividades() == null || a.getAtividades().size() == 0)
 			return false;
-		else if (a.getDescricao() == null)
+		else if (a.getDescricao() == null || a.getDescricao().isEmpty())
 			return false;
 		else
 			return true;

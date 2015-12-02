@@ -232,6 +232,11 @@ public class TelaInstituicao {
 		frmInstituio.getContentPane().add(btnSalvar);
 
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmInstituio.dispose();
+			}
+		});
 		btnVoltar.setBounds(10, 367, 89, 23);
 		frmInstituio.getContentPane().add(btnVoltar);
 

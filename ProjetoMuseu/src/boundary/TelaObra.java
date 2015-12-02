@@ -294,6 +294,11 @@ public class TelaObra {
 		frmObra.getContentPane().add(btnSalvar);
 
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmObra.dispose();
+			}
+		});
 		btnVoltar.setBounds(10, 530, 89, 23);
 		frmObra.getContentPane().add(btnVoltar);
 
@@ -342,27 +347,27 @@ public class TelaObra {
 		});
 		btnNovo.setBounds(380, 530, 89, 23);
 		frmObra.getContentPane().add(btnNovo);
-		
+
 		cmbMes = new JComboBox();
 		for (Meses m : Meses.values()) {
 			cmbMes.addItem(m.toString().replace('_', ' '));
 		}
 		cmbMes.setBounds(196, 197, 146, 20);
 		frmObra.getContentPane().add(cmbMes);
-		
+
 		JLabel lblMs = new JLabel("M\u00EAs:");
 		lblMs.setBounds(151, 200, 46, 14);
 		frmObra.getContentPane().add(lblMs);
-		
+
 		txtAno = new JTextField();
 		txtAno.setColumns(10);
 		txtAno.setBounds(398, 197, 57, 20);
 		frmObra.getContentPane().add(txtAno);
-		
+
 		JLabel lblAno = new JLabel("Ano:");
 		lblAno.setBounds(358, 200, 46, 14);
 		frmObra.getContentPane().add(lblAno);
-		
+
 		txtTecnica = new JTextField();
 		txtTecnica.setColumns(10);
 		txtTecnica.setBounds(369, 124, 140, 20);

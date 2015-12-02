@@ -79,7 +79,11 @@ public class TelaGrafico implements ActionListener {
 		frmGrafico.getContentPane().setLayout(null);
 
 		JButton btnVoltar = new JButton("Voltar");
-		// ImageIcon(TelaGrafico.class.getResource("/br/eng/icon/img-voltar.png")));
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmGrafico.dispose();
+			}
+		});
 		btnVoltar.setBounds(10, 394, 108, 38);
 		btnVoltar.addActionListener(this);
 		frmGrafico.getContentPane().add(btnVoltar);

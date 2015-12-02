@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -35,14 +36,13 @@ public class TelaAutor {
 	private JTextField txtFimAtiv;
 	private JTextField txtDescricao;
 	private JButton btnPesquisar, btnSalvar, btnAlterar, btnVoltar, btnNovo;
-	@SuppressWarnings("rawtypes")
-	private JComboBox cmbPais;
+	private JComboBox<String> cmbPais;
 	private JTextField txtDiaF;
 	private JTextField txtDiaN;
 	private JTextField txtAnoN;
 	private JTextField txtAnoF;
-	private JComboBox<String> cmbMesN;
-	private JComboBox<String> cmbMesF;
+	private JComboBox<Meses> cmbMesN;
+	private JComboBox<Meses> cmbMesF;
 	private JList<CheckboxListItem> listaAtividades;
 	private CheckboxListItem[] cList;
 	private int id = 0;
@@ -73,12 +73,11 @@ public class TelaAutor {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	@SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Autor");
 		frame.setBounds(100, 100, 585, 530);
-		frame.setDefaultCloseOperation(JFrame.DEFAULT_CURSOR);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
 
@@ -99,7 +98,7 @@ public class TelaAutor {
 		lblPas.setBounds(10, 197, 46, 14);
 		frame.getContentPane().add(lblPas);
 
-		cmbPais = new JComboBox();
+		cmbPais = new JComboBox<String>();
 		for (Paises p : Paises.values()) {
 			cmbPais.addItem(p.toString().replace('_', ' '));
 		}
@@ -200,87 +199,89 @@ public class TelaAutor {
 		btnSalvar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				Autor a = new Autor();
-				a.setId(id);
-				a.setNome(txtNome.getText());
-				try {
-					a.setDiaIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(0, 2)));
-				} catch (NumberFormatException n) {
-					a.setDiaIniAtv(0);
-				}
-				try {
-					a.setMesIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(3, 5)));
-				} catch (NumberFormatException n) {
-					a.setMesIniAtv(0);
-				}
-				try {
-					a.setAnoIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(6, 10)));
-				} catch (NumberFormatException n) {
-					a.setAnoIniAtv(0);
-				}
-				try {
-					a.setDiaFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(0, 2)));
-				} catch (NumberFormatException n) {
-					a.setDiaFimAtv(0);
-				}
-				try {
-					a.setMesFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(3, 5)));
-				} catch (NumberFormatException n) {
-					a.setMesFimAtv(0);
-				}
-				try {
-					a.setAnoFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(6, 10)));
-				} catch (NumberFormatException n) {
-					a.setAnoFimAtv(0);
-				}
-
-				a.setDescricao(txtDescricao.getText());
-				a.setPais(cmbPais.getSelectedItem().toString());
-
-				try {
-					a.setDiaN(Integer.parseInt(txtDiaN.getText()));
-				} catch (NumberFormatException n) {
-					a.setDiaN(0);
-				}
-				try {
-					a.setDiaM(Integer.parseInt(txtDiaF.getText()));
-				} catch (NumberFormatException n) {
-					a.setDiaM(0);
-				}
-				try {
-					a.setAnoN(Integer.parseInt(txtAnoN.getText()));
-				} catch (NumberFormatException n) {
-					a.setAnoN(0);
-				}
-				try {
-					a.setAnoM(Integer.parseInt(txtAnoF.getText()));
-				} catch (NumberFormatException n) {
-					a.setAnoM(0);
-				}
-
-				a.setMesN(cmbMesN.getSelectedIndex());
-				a.setMesM(cmbMesF.getSelectedIndex());
-
-				List<String> atvList = new ArrayList<String>();
-				for (int i = 0; i < cList.length; i++) {
-					if (listaAtividades.getModel().getElementAt(i).isSelected()) {
-						atvList.add(listaAtividades.getModel().getElementAt(i).getLabel());
+				if (validarDatas()) {
+					Autor a = new Autor();
+					a.setId(id);
+					a.setNome(txtNome.getText());
+					try {
+						a.setDiaIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(0, 2)));
+					} catch (NumberFormatException n) {
+						a.setDiaIniAtv(0);
 					}
-				}
-				a.setAtividades(atvList);
+					try {
+						a.setMesIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(3, 5)));
+					} catch (NumberFormatException n) {
+						a.setMesIniAtv(0);
+					}
+					try {
+						a.setAnoIniAtv(Integer.parseInt(txtIniAtiv.getText().substring(6, 10)));
+					} catch (NumberFormatException n) {
+						a.setAnoIniAtv(0);
+					}
+					try {
+						a.setDiaFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(0, 2)));
+					} catch (NumberFormatException n) {
+						a.setDiaFimAtv(0);
+					}
+					try {
+						a.setMesFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(3, 5)));
+					} catch (NumberFormatException n) {
+						a.setMesFimAtv(0);
+					}
+					try {
+						a.setAnoFimAtv(Integer.parseInt(txtFimAtiv.getText().substring(6, 10)));
+					} catch (NumberFormatException n) {
+						a.setAnoFimAtv(0);
+					}
 
-				AutorController ac = new AutorController();
+					a.setDescricao(txtDescricao.getText());
+					a.setPais(cmbPais.getSelectedItem().toString());
 
-				if (ac.verificarAutor(a)) {
-					if (ac.salvarAutor(a)) {
-						JOptionPane.showMessageDialog(null, "Autor salvo com sucesso");
-						limparForm();
-						bloquearForm();
+					try {
+						a.setDiaN(Integer.parseInt(txtDiaN.getText()));
+					} catch (NumberFormatException n) {
+						a.setDiaN(0);
+					}
+					try {
+						a.setDiaM(Integer.parseInt(txtDiaF.getText()));
+					} catch (NumberFormatException n) {
+						a.setDiaM(0);
+					}
+					try {
+						a.setAnoN(Integer.parseInt(txtAnoN.getText()));
+					} catch (NumberFormatException n) {
+						a.setAnoN(0);
+					}
+					try {
+						a.setAnoM(Integer.parseInt(txtAnoF.getText()));
+					} catch (NumberFormatException n) {
+						a.setAnoM(0);
+					}
+
+					a.setMesN(cmbMesN.getSelectedIndex());
+					a.setMesM(cmbMesF.getSelectedIndex());
+
+					List<String> atvList = new ArrayList<String>();
+					for (int i = 0; i < cList.length; i++) {
+						if (listaAtividades.getModel().getElementAt(i).isSelected()) {
+							atvList.add(listaAtividades.getModel().getElementAt(i).getLabel());
+						}
+					}
+					a.setAtividades(atvList);
+
+					AutorController ac = new AutorController();
+
+					if (ac.verificarAutor(a)) {
+						if (ac.salvarAutor(a)) {
+							JOptionPane.showMessageDialog(null, "Autor salvo com sucesso");
+							limparForm();
+							bloquearForm();
+						} else {
+							JOptionPane.showMessageDialog(null, "Falha ao salvar o Autor");
+						}
 					} else {
-						JOptionPane.showMessageDialog(null, "Falha ao salvar o Autor");
+						JOptionPane.showMessageDialog(null, "Preencha os campos obrigatórios");
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Preencha os campos obrigatórios");
 				}
 			}
 		});
@@ -288,6 +289,11 @@ public class TelaAutor {
 		frame.getContentPane().add(btnSalvar);
 
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frame.dispose();
+			}
+		});
 		btnVoltar.setBounds(10, 458, 89, 23);
 		frame.getContentPane().add(btnVoltar);
 
@@ -326,7 +332,7 @@ public class TelaAutor {
 		lblAno.setBounds(380, 86, 40, 14);
 		frame.getContentPane().add(lblAno);
 
-		cmbMesN = new JComboBox(Meses.values());
+		cmbMesN = new JComboBox<Meses>(Meses.values());
 		cmbMesN.setBounds(197, 83, 154, 20);
 		frame.getContentPane().add(cmbMesN);
 
@@ -342,7 +348,7 @@ public class TelaAutor {
 		label_2.setBounds(153, 151, 40, 14);
 		frame.getContentPane().add(label_2);
 
-		cmbMesF = new JComboBox(Meses.values());
+		cmbMesF = new JComboBox<Meses>(Meses.values());
 		cmbMesF.setBounds(197, 148, 154, 20);
 		frame.getContentPane().add(cmbMesF);
 
@@ -362,6 +368,7 @@ public class TelaAutor {
 
 		listaAtividades.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
+				@SuppressWarnings("unchecked")
 				JList<CheckboxListItem> list = (JList<CheckboxListItem>) event.getSource();
 
 				int index = list.locationToIndex(event.getPoint());
@@ -378,21 +385,49 @@ public class TelaAutor {
 		frame.getContentPane().add(sclAtiv);
 
 		txtDiaF = new JTextField();
+		javax.swing.text.MaskFormatter diaF;
+		try {
+			diaF = new javax.swing.text.MaskFormatter("##");
+			txtDiaF = new javax.swing.JFormattedTextField(diaF);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtDiaF.setBounds(82, 145, 40, 26);
 		frame.getContentPane().add(txtDiaF);
 		txtDiaF.setColumns(10);
 
 		txtDiaN = new JTextField();
+		javax.swing.text.MaskFormatter diaN;
+		try {
+			diaN = new javax.swing.text.MaskFormatter("##");
+			txtDiaN = new javax.swing.JFormattedTextField(diaN);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtDiaN.setColumns(10);
 		txtDiaN.setBounds(82, 80, 40, 26);
 		frame.getContentPane().add(txtDiaN);
 
 		txtAnoN = new JTextField();
+		javax.swing.text.MaskFormatter anoN;
+		try {
+			anoN = new javax.swing.text.MaskFormatter("####");
+			txtAnoN = new javax.swing.JFormattedTextField(anoN);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtAnoN.setColumns(10);
 		txtAnoN.setBounds(414, 80, 68, 26);
 		frame.getContentPane().add(txtAnoN);
 
 		txtAnoF = new JTextField();
+		javax.swing.text.MaskFormatter anoF;
+		try {
+			anoF = new javax.swing.text.MaskFormatter("####");
+			txtAnoF = new javax.swing.JFormattedTextField(anoF);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtAnoF.setColumns(10);
 		txtAnoF.setBounds(414, 145, 68, 26);
 		frame.getContentPane().add(txtAnoF);
@@ -453,6 +488,78 @@ public class TelaAutor {
 			listaAtividades.getModel().getElementAt(i).setEnabled(false);
 			listaAtividades.repaint(listaAtividades.getCellBounds(i, i));
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean validarDatas() {
+		Date iniA = null, fimA = null, nasce = null, morre = null;
+		try {
+			iniA = new Date(txtIniAtiv.getText());
+		} catch (Exception e) {
+			// JOptionPane.showMessageDialog(null, "Preencha a data inicio
+			// atividade corretamente!");
+			// return false;
+		}
+
+		try {
+			fimA = new Date(txtFimAtiv.getText());
+		} catch (Exception e) {
+			// JOptionPane.showMessageDialog(null, "Preencha a data fim
+			// atividade corretamente!");
+			// return false;
+		}
+
+		try {
+			nasce = new Date(txtDiaN.getText() + "/" + cmbMesN.getSelectedIndex() + "/" + txtAnoN.getText());
+		} catch (Exception e) {
+			// JOptionPane.showMessageDialog(null, "Preencha a data de
+			// nascimento corretamente!");
+			// return false;
+		}
+
+		try {
+			morre = new Date(txtDiaF.getText() + "/" + cmbMesF.getSelectedIndex() + "/" + txtAnoF.getText());
+		} catch (Exception e) {
+			// JOptionPane.showMessageDialog(null, "Preencha a data de
+			// falecimento corretamente!");
+			// return false;
+		}
+
+		try {
+			if (iniA.after(fimA) && !txtIniAtiv.getText().isEmpty() || !txtFimAtiv.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Data início atividade deve ser anterior do fim atividade!");
+				return false;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			if (nasce.after(morre) && !txtIniAtiv.getText().isEmpty() || !txtFimAtiv.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Data nascimento deve ser anterior de falecimento!");
+				return false;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			if (iniA.before(nasce) && !txtDiaN.getText().isEmpty() || cmbMesN.getSelectedIndex() != 0
+					|| !txtAnoN.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Data início atividade deve ser depois do nascimento!");
+				return false;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			if (fimA.after(morre) && !txtDiaF.getText().isEmpty() || cmbMesF.getSelectedIndex() != 0
+					|| !txtAnoF.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Data fim atividade deve ser antes do falecimento!");
+				return false;
+			}
+		} catch (Exception e) {
+		}
+
+		return true;
 	}
 
 }

@@ -7,11 +7,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -30,7 +32,6 @@ import entity.Emprestimo;
 import entity.Instituicao;
 import entity.Obra;
 import util.ObraTableModel;
-import javax.swing.DefaultComboBoxModel;
 
 public class TelaEmprestimo {
 
@@ -142,6 +143,13 @@ public class TelaEmprestimo {
 		frame.getContentPane().add(lblDataEmprstimo);
 
 		txtDtEmprestimo = new JTextField();
+		javax.swing.text.MaskFormatter datae;
+		try {
+			datae = new javax.swing.text.MaskFormatter("##/##/####");
+			txtDtEmprestimo = new javax.swing.JFormattedTextField(datae);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtDtEmprestimo.setBounds(153, 133, 86, 20);
 		frame.getContentPane().add(txtDtEmprestimo);
 		txtDtEmprestimo.setColumns(10);
@@ -151,6 +159,13 @@ public class TelaEmprestimo {
 		frame.getContentPane().add(lblDataDevoluo);
 
 		txtDtDevolucao = new JTextField();
+		javax.swing.text.MaskFormatter datad;
+		try {
+			datad = new javax.swing.text.MaskFormatter("##/##/####");
+			txtDtDevolucao = new javax.swing.JFormattedTextField(datad);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		txtDtDevolucao.setBounds(412, 133, 86, 20);
 		frame.getContentPane().add(txtDtDevolucao);
 		txtDtDevolucao.setColumns(10);
@@ -241,41 +256,49 @@ public class TelaEmprestimo {
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Emprestimo emp = new Emprestimo();
-				try {
-					int idAux = txtNSolicitacao.getText().isEmpty() ? id : Integer.parseInt(txtNSolicitacao.getText());
-					emp.setId(idAux);
-				} catch (NumberFormatException n) {
-					emp.setId(0);
-				}
-				emp.setStatus(cmbStatus.getSelectedItem().toString());
-				txtInstituicao.setText("");
-				emp.setInstituicao(iList.get(cmbInstituicao.getSelectedIndex()));
-				emp.setTituloExibicao(txtTituloExibicao.getText());
-				emp.setDataEmprestimo(new Date(txtDtEmprestimo.getText()));
-				emp.setDataDevolucao(new Date(txtDtDevolucao.getText()));
-				txtObra.setText("");
-				txtTitulo.setText("");
-				emp.setObras(tableModel.getListaDeObras());
-				emp.setObservacao(txtObservacao.getText());
-
-				EmprestimoController ec = new EmprestimoController();
-				if (ec.verificarEmprestimo(emp)) {
-					if (ec.salvarEmprestimo(emp)) {
-						JOptionPane.showMessageDialog(null, "Emprestimo salvo com sucesso");
-					} else {
-						JOptionPane.showMessageDialog(null, "Falha ao salvar o Emprestimo");
+				if (validarDatas()) {
+					Emprestimo emp = new Emprestimo();
+					try {
+						int idAux = txtNSolicitacao.getText().isEmpty() ? id
+								: Integer.parseInt(txtNSolicitacao.getText());
+						emp.setId(idAux);
+					} catch (NumberFormatException n) {
+						emp.setId(0);
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Preencha os campos obrigatórios");
-				}
+					emp.setStatus(cmbStatus.getSelectedItem().toString());
+					txtInstituicao.setText("");
+					emp.setInstituicao(iList.get(cmbInstituicao.getSelectedIndex()));
+					emp.setTituloExibicao(txtTituloExibicao.getText());
+					emp.setDataEmprestimo(new Date(txtDtEmprestimo.getText()));
+					emp.setDataDevolucao(new Date(txtDtDevolucao.getText()));
+					txtObra.setText("");
+					txtTitulo.setText("");
+					emp.setObras(tableModel.getListaDeObras());
+					emp.setObservacao(txtObservacao.getText());
 
+					EmprestimoController ec = new EmprestimoController();
+					if (ec.verificarEmprestimo(emp)) {
+						if (ec.salvarEmprestimo(emp)) {
+							JOptionPane.showMessageDialog(null, "Emprestimo salvo com sucesso");
+						} else {
+							JOptionPane.showMessageDialog(null, "Falha ao salvar o Emprestimo");
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "Preencha os campos obrigatórios");
+					}
+
+				}
 			}
 		});
 		btnSalvar.setBounds(479, 550, 89, 23);
 		frame.getContentPane().add(btnSalvar);
 
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frame.dispose();
+			}
+		});
 		btnVoltar.setBounds(10, 550, 89, 23);
 		frame.getContentPane().add(btnVoltar);
 
@@ -360,6 +383,35 @@ public class TelaEmprestimo {
 		tableModel.limpar();
 		tblObras.setModel(tableModel);
 		txtObservacao.setText("");
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean validarDatas() {
+		Date emp, dev;
+
+		try {
+			emp = new Date(txtDtEmprestimo.getText());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Preencha a data de emprestimo corretamente!");
+			return false;
+		}
+
+		try {
+			dev = new Date(txtDtDevolucao.getText());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Preencha a data de devolução corretamente!");
+			return false;
+		}
+
+		if (emp.after(dev)) {
+			JOptionPane.showMessageDialog(null, "Data empréstimo deve ser anterior a de devolução!");
+			return false;
+		}
+		if (emp.before(new Date(System.currentTimeMillis()))) {
+			JOptionPane.showMessageDialog(null, "Data empréstimo deve ser no mínimo hoje ou posterior!");
+			return false;
+		}
+		return true;
 	}
 
 	public void initiateSearch(String lookFor) {
