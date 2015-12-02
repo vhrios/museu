@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import controller.UsuarioControle;
 import entity.Usuario;
 
-public class TelaLogin implements ActionListener{
+public class TelaLogin {
 
 	private JFrame frame;
 	private JTextField txtLogin;
@@ -52,48 +52,45 @@ public class TelaLogin implements ActionListener{
 		frame.setBounds(100, 100, 409, 243);
 		frame.setDefaultCloseOperation(JFrame.DEFAULT_CURSOR);
 		frame.getContentPane().setLayout(null);
-		
+
 		JLabel lblLogin = new JLabel("Login: ");
 		lblLogin.setBounds(55, 40, 46, 14);
 		frame.getContentPane().add(lblLogin);
-		
+
 		JLabel lblSenha = new JLabel("Senha: ");
 		lblSenha.setBounds(55, 94, 46, 14);
 		frame.getContentPane().add(lblSenha);
-		
+
 		txtLogin = new JTextField();
 		txtLogin.setBounds(101, 37, 150, 20);
 		frame.getContentPane().add(txtLogin);
 		txtLogin.setColumns(10);
-		
+
 		txtSenha = new JPasswordField();
 		txtSenha.setBounds(101, 91, 150, 20);
 		frame.getContentPane().add(txtSenha);
-		
+
 		JButton btnEntrar = new JButton("Entrar");
+		btnEntrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Usuario u;
+				u = validaUsuario();
+				UsuarioControle uc = new UsuarioControle();
+				uc.validaLogin(u);
+			}
+		});
 		btnEntrar.setBounds(283, 148, 89, 23);
 		frame.getContentPane().add(btnEntrar);
-		
+
 		JButton btnSair = new JButton("Sair");
+		btnSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		btnSair.setBounds(15, 148, 89, 23);
 		frame.getContentPane().add(btnSair);
-		
-		btnEntrar.addActionListener(this);
-		btnSair.addActionListener(this);
-	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		if ("Entrar".equals(cmd)) {
-			Usuario u;
-			u = validaUsuario();
-			UsuarioControle uc = new UsuarioControle();
-			uc.validaLogin(u);
-		}
-		if ("Sair".equals(cmd)) {
-			System.exit(0);
-		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -102,7 +99,7 @@ public class TelaLogin implements ActionListener{
 		if (!"".equals(txtLogin.getText()) && !"".equals(txtSenha.getText())) {
 			u.setLogin(txtLogin.getText());
 			u.setSenha(txtSenha.getText());
-		}else{
+		} else {
 			JOptionPane.showMessageDialog(null, "Preencha todos os campos");
 		}
 		return u;

@@ -46,7 +46,7 @@ public class TelaPrincipal {
 	 * Create the application.
 	 */
 	public TelaPrincipal() {
-		initialize();
+		this(new Usuario());
 	}
 
 	public TelaPrincipal(Usuario u) {
@@ -154,7 +154,14 @@ public class TelaPrincipal {
 		btnEstatistica.setBounds(223, 209, 173, 39);
 		frmMm.getContentPane().add(btnEstatistica);
 
-		Label lblBemVindo = new Label("Bem vindo, " + u.getNome());
+		Label lblBemVindo = new Label();
+		String nome;
+		try {
+			nome = u.getNome();
+		} catch (NullPointerException e) {
+			nome = "Visitante";
+		}
+		lblBemVindo.setText("Bem vindo, " + nome);
 		lblBemVindo.setBounds(15, 10, 588, 27);
 		frmMm.getContentPane().add(lblBemVindo);
 
