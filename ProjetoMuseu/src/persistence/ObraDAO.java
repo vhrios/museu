@@ -43,44 +43,44 @@ public class ObraDAO implements IObra{
 	public boolean manter(Obra o) throws SQLException {
 		PreparedStatement ps;
 		if (o.getId() == 0) {
-			String sql = "INSERT INTO obra (titulo, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tipo, movimento) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO obra (titulo, apelido, dia, mes, ano, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tecnica, movimento) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, o.getTitulo());
 			ps.setString(2, o.getApelido());
 			ps.setInt(3, o.getDia());
-			ps.setInt(3, o.getMes());
-			ps.setInt(3, o.getAno());
-			ps.setString(4, o.getPeriodo());
-			ps.setFloat(5, o.getAltura());
-			ps.setFloat(6, o.getLargura());
-			ps.setFloat(7, o.getProfundidade());
-			ps.setDouble(8, o.getValor());
-			ps.setString(9, o.getBiografia());
-			ps.setInt(10, o.getAutor().getId());
-			ps.setInt(11, o.getInstituicao().getId());
-			ps.setString(12, o.getCategoria());
-			ps.setString(13, o.getTipo());
-			ps.setString(14, o.getMovimento());
+			ps.setInt(4, o.getMes());
+			ps.setInt(5, o.getAno());
+			ps.setString(6, o.getPeriodo());
+			ps.setFloat(7, o.getAltura());
+			ps.setFloat(8, o.getLargura());
+			ps.setFloat(9, o.getProfundidade());
+			ps.setDouble(10, o.getValor());
+			ps.setString(11, o.getBiografia());
+			ps.setInt(12, o.getAutor().getId());
+			ps.setInt(13, o.getInstituicao().getId());
+			ps.setString(14, o.getCategoria());
+			ps.setString(15, o.getTecnica());
+			ps.setString(16, o.getMovimento());
 		} else {
-			String sql = "UPDATE obra SET titulo = ?, apelido = ?, data = ?, periodo = ?, altura = ?, largura = ?, profundidade = ?, valor = ?, biografia = ?, autor_id = ?, instituicao_id = ?, categoria = ?, tipo = ?, movimento = ? WHERE id = ?";
+			String sql = "UPDATE obra SET titulo = ?, apelido = ?, dia = ?, mes = ?, ano = ?, periodo = ?, altura = ?, largura = ?, profundidade = ?, valor = ?, biografia = ?, autor_id = ?, instituicao_id = ?, categoria = ?, tecnica = ?, movimento = ? WHERE id = ?";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, o.getTitulo());
 			ps.setString(2, o.getApelido());
 			ps.setInt(3, o.getDia());
-			ps.setInt(3, o.getMes());
-			ps.setInt(3, o.getAno());
-			ps.setString(4, o.getPeriodo());
-			ps.setFloat(5, o.getAltura());
-			ps.setFloat(6, o.getLargura());
-			ps.setFloat(7, o.getProfundidade());
-			ps.setDouble(8, o.getValor());
-			ps.setString(9, o.getBiografia());
-			ps.setInt(10, o.getAutor().getId());
-			ps.setInt(11, o.getInstituicao().getId());
-			ps.setString(12, o.getCategoria());
-			ps.setString(13, o.getTipo());
-			ps.setString(14, o.getMovimento());
-			ps.setInt(15, o.getId());
+			ps.setInt(4, o.getMes());
+			ps.setInt(5, o.getAno());
+			ps.setString(6, o.getPeriodo());
+			ps.setFloat(7, o.getAltura());
+			ps.setFloat(8, o.getLargura());
+			ps.setFloat(9, o.getProfundidade());
+			ps.setDouble(10, o.getValor());
+			ps.setString(11, o.getBiografia());
+			ps.setInt(12, o.getAutor().getId());
+			ps.setInt(13, o.getInstituicao().getId());
+			ps.setString(14, o.getCategoria());
+			ps.setString(15, o.getTecnica());
+			ps.setString(16, o.getMovimento());
+			ps.setInt(17, o.getId());
 		}
 
 		int linhasAfetadas = ps.executeUpdate();
@@ -90,8 +90,9 @@ public class ObraDAO implements IObra{
 		}
 
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
-			if (idsGerados.next()) {
-				o.setId(idsGerados.getInt(1));
+			if (idsGerados.next() || o.getId()!=0) {
+				int id = o.getId()==0 ? idsGerados.getInt(1) : o.getId();
+				o.setId(id);
 				ps.close();
 				return true;
 			} else {
@@ -120,7 +121,7 @@ public class ObraDAO implements IObra{
 
 	@Override
 	public Obra pesquisarPorID(int id) throws SQLException {
-		String sql = "SELECT titulo, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tipo, movimento FROM obra WHERE id = ?";
+		String sql = "SELECT titulo, apelido, dia, mes, ano, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tecnica, movimento FROM obra WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setInt(1, id);
 
@@ -144,7 +145,7 @@ public class ObraDAO implements IObra{
 			o.setAutor(new AutorDAO().pesquisarPorID(rs.getInt("autor_id")));
 			o.setInstituicao(new InstituicaoDAO().pesquisarPorID(rs.getInt("instituicao_id")));
 			o.setCategoria(rs.getString("categoria"));
-			o.setTipo(rs.getString("tipo"));
+			o.setTecnica(rs.getString("tecnica"));
 			o.setMovimento(rs.getString("movimento"));
 		} else {
 			o = null;
@@ -155,7 +156,7 @@ public class ObraDAO implements IObra{
 
 	@Override
 	public Obra pesquisarPorTitulo(String titulo) throws SQLException {
-		String sql = "SELECT id, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor, instituicao, categoria, tipo, movimento FROM obra WHERE titulo = '?'";
+		String sql = "SELECT id, apelido, dia, mes, ano, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tecnica, movimento FROM obra WHERE titulo = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, titulo);
 
@@ -179,7 +180,7 @@ public class ObraDAO implements IObra{
 			o.setAutor(new AutorDAO().pesquisarPorID(rs.getInt("autor_id")));
 			o.setInstituicao(new InstituicaoDAO().pesquisarPorID(rs.getInt("instituicao_id")));
 			o.setCategoria(rs.getString("categoria"));
-			o.setTipo(rs.getString("tipo"));
+			o.setTecnica(rs.getString("tecnica"));
 			o.setMovimento(rs.getString("movimento"));
 		} else {
 			o = null;
@@ -190,7 +191,7 @@ public class ObraDAO implements IObra{
 
 	@Override
 	public List<Obra> carregarTodos() throws SQLException {
-		String sql = "SELECT id, titulo, apelido, data, periodo, altura, largura, profundidade, valor, biografia, autor, instituicao, categoria, tipo, movimento FROM obra";
+		String sql = "SELECT id, titulo, apelido, dia, mes, ano, periodo, altura, largura, profundidade, valor, biografia, autor_id, instituicao_id, categoria, tecnica, movimento FROM obra";
 		PreparedStatement ps = c.prepareStatement(sql);
 
 		List<Obra> oList = new ArrayList<Obra>();
@@ -219,7 +220,7 @@ public class ObraDAO implements IObra{
 			o.setInstituicao(i);
 			
 			o.setCategoria(rs.getString("categoria"));
-			o.setTipo(rs.getString("tipo"));
+			o.setTecnica(rs.getString("tecnica"));
 			o.setMovimento(rs.getString("movimento"));
 			oList.add(o);
 		}

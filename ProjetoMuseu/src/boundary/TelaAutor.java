@@ -162,9 +162,11 @@ public class TelaAutor {
 						id = a.getId();
 						txtNome.setText(a.getNome());
 
-						String iniA = String.format("%02d", a.getDiaIniAtv()) + String.format("%02d", a.getMesIniAtv()) + String.format("%04d", a.getAnoIniAtv());
+						String iniA = String.format("%02d", a.getDiaIniAtv()) + String.format("%02d", a.getMesIniAtv())
+								+ String.format("%04d", a.getAnoIniAtv());
 						txtIniAtiv.setText(iniA);
-						String fimA = String.format("%02d", a.getDiaFimAtv()) + String.format("%02d", a.getMesFimAtv()) + String.format("%04d", a.getAnoFimAtv());
+						String fimA = String.format("%02d", a.getDiaFimAtv()) + String.format("%02d", a.getMesFimAtv())
+								+ String.format("%04d", a.getAnoFimAtv());
 						txtFimAtiv.setText(fimA);
 
 						txtDescricao.setText(a.getDescricao());
@@ -399,6 +401,7 @@ public class TelaAutor {
 	}
 
 	private void limparForm() {
+		id = 0;
 		txtNome.setText("");
 		txtIniAtiv.setText("");
 		txtFimAtiv.setText("");

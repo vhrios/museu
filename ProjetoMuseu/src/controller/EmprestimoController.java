@@ -20,7 +20,7 @@ public class EmprestimoController {
 				return null;
 			}
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Falha no SQL ao buscar Autor");
+			JOptionPane.showMessageDialog(null, "Falha no SQL ao buscar Empréstimo");
 			return null;
 		}
 	}
@@ -30,14 +30,16 @@ public class EmprestimoController {
 		try {
 			return ie.manter(e);
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Falha no SQL ao manter Autor");
+			JOptionPane.showMessageDialog(null, "Falha no SQL ao manter Empréstimo");
 			return false;
 		}
 	}
 
 	public boolean verificarEmprestimo(Emprestimo e) {
-		if (e.getStatus().isEmpty() || e.getTituloExibicao().isEmpty()
-				|| e.getDataEmprestimo().after(e.getDataDevolucao()) || e.getInstituicao().getId() == 0
+		if (e.getStatus().isEmpty() 
+				|| e.getTituloExibicao().isEmpty()
+				|| e.getDataEmprestimo().after(e.getDataDevolucao())
+				|| e.getInstituicao().getId() == 0
 				|| e.getObras().isEmpty()) {
 			return false;
 		} else

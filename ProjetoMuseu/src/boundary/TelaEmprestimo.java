@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -29,6 +30,7 @@ import entity.Emprestimo;
 import entity.Instituicao;
 import entity.Obra;
 import util.ObraTableModel;
+import javax.swing.DefaultComboBoxModel;
 
 public class TelaEmprestimo {
 
@@ -41,18 +43,19 @@ public class TelaEmprestimo {
 	private JTextField txtDtDevolucao;
 	private JTextField txtObra;
 	private JTextField txtTitulo;
-	// private DefaultTableModel modelo;
 	private ObraTableModel tableModel;
 	private JTextField txtObservacao;
 	private JButton btnSalvar, btnPesquisar, btnLimpar, btnAdiciona, btnVoltar;
-	@SuppressWarnings("rawtypes")
-	private JComboBox cmbStatus, cmbInstituicao, cmbObra;
+	private JComboBox<String> cmbStatus, cmbInstituicao, cmbObra;
 	private List<Instituicao> iList;
 	private List<Obra> oList;
+	private List<Obra> tableObraList = new ArrayList<Obra>();
 
 	private JList<String> list = new JList<String>();
 	private JScrollPane pane = new JScrollPane();
 	private ResultWindow r = new ResultWindow();
+
+	private int id;
 
 	/**
 	 * Launch the application.
@@ -102,6 +105,8 @@ public class TelaEmprestimo {
 		frame.getContentPane().add(lblStatus);
 
 		cmbStatus = new JComboBox();
+		cmbStatus.setModel(
+				new DefaultComboBoxModel(new String[] { "Em an\u00E1lise", "Deferido", "Indeferido", "Cancelado" }));
 		cmbStatus.setBounds(411, 25, 121, 20);
 		frame.getContentPane().add(cmbStatus);
 
@@ -206,12 +211,19 @@ public class TelaEmprestimo {
 								"Deseja removar a obra: " + tableModel.getValueAt(row, 0) + " da lista?", "Warning",
 								JOptionPane.YES_NO_OPTION);
 						if (dialogResult == JOptionPane.YES_OPTION) {
+							oList.add(tableObraList.get(row));
+							tableObraList.remove(row);
 							tableModel.removeObra(row);
+							cmbObra.removeAllItems();
+							for (Obra o : oList) {
+								cmbObra.addItem(o.getTitulo());
+							}
 						}
 					}
 				}
 			}
 		});
+		tableModel = new ObraTableModel();
 		tblObras.setModel(tableModel);
 		scrollPane.setViewportView(tblObras);
 
@@ -230,15 +242,18 @@ public class TelaEmprestimo {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Emprestimo emp = new Emprestimo();
-
-				emp.setId(Integer.parseInt(txtNSolicitacao.getText()));
+				try {
+					int idAux = txtNSolicitacao.getText().isEmpty() ? id : Integer.parseInt(txtNSolicitacao.getText());
+					emp.setId(idAux);
+				} catch (NumberFormatException n) {
+					emp.setId(0);
+				}
 				emp.setStatus(cmbStatus.getSelectedItem().toString());
-				// txtInstituicao;
+				txtInstituicao.setText("");
 				emp.setInstituicao(iList.get(cmbInstituicao.getSelectedIndex()));
 				emp.setTituloExibicao(txtTituloExibicao.getText());
 				emp.setDataEmprestimo(new Date(txtDtEmprestimo.getText()));
 				emp.setDataDevolucao(new Date(txtDtDevolucao.getText()));
-				// cmbObra;
 				txtObra.setText("");
 				txtTitulo.setText("");
 				emp.setObras(tableModel.getListaDeObras());
@@ -247,9 +262,9 @@ public class TelaEmprestimo {
 				EmprestimoController ec = new EmprestimoController();
 				if (ec.verificarEmprestimo(emp)) {
 					if (ec.salvarEmprestimo(emp)) {
-						JOptionPane.showMessageDialog(null, "Autor salvo com sucesso");
+						JOptionPane.showMessageDialog(null, "Emprestimo salvo com sucesso");
 					} else {
-						JOptionPane.showMessageDialog(null, "Falha ao salvar o Autor");
+						JOptionPane.showMessageDialog(null, "Falha ao salvar o Emprestimo");
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Preencha os campos obrigatórios");
@@ -280,6 +295,7 @@ public class TelaEmprestimo {
 					EmprestimoController ec = new EmprestimoController();
 					Emprestimo emp = ec.pesquisarPorId(Integer.parseInt(txtNSolicitacao.getText()));
 					if (emp != null) {
+						id = emp.getId();
 						txtNSolicitacao.setText(Integer.toString(emp.getId()));
 						cmbStatus.setSelectedItem(emp.getStatus());
 						// txtInstituicao;
@@ -295,7 +311,7 @@ public class TelaEmprestimo {
 
 						txtObservacao.setText(emp.getObservacao());
 					} else {
-						JOptionPane.showMessageDialog(null, "Nenhum encontrado");
+						JOptionPane.showMessageDialog(null, "Nenhum Empréstimo foi encontrado");
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Digite um Nº de Solicitação antes de pesquisar");
@@ -308,7 +324,15 @@ public class TelaEmprestimo {
 		btnAdiciona = new JButton("+");
 		btnAdiciona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableModel.addObra(oList.get(cmbObra.getSelectedIndex()));
+				if (cmbObra.getItemCount() > 0) {
+					tableModel.addObra(oList.get(cmbObra.getSelectedIndex()));
+					tableObraList.add(oList.get(cmbObra.getSelectedIndex()));
+					oList.remove(cmbObra.getSelectedIndex());
+					cmbObra.removeAllItems();
+					for (Obra o : oList) {
+						cmbObra.addItem(o.getTitulo());
+					}
+				}
 			}
 		});
 		btnAdiciona.setBounds(444, 211, 46, 23);
@@ -317,6 +341,7 @@ public class TelaEmprestimo {
 	}
 
 	private void limparForm() {
+		id = 0;
 		txtNSolicitacao.setText("");
 		cmbStatus.setSelectedItem(0);
 		txtInstituicao.setText("");
@@ -324,10 +349,16 @@ public class TelaEmprestimo {
 		txtTituloExibicao.setText("");
 		txtDtEmprestimo.setText("");
 		txtDtDevolucao.setText("");
-		cmbObra.setSelectedIndex(0);
+		oList.addAll(tableObraList);
+		tableObraList.removeAll(tableObraList);
+		cmbObra.removeAllItems();
+		for (Obra o : oList) {
+			cmbObra.addItem(o.getTitulo());
+		}
 		txtObra.setText("");
 		txtTitulo.setText("");
 		tableModel.limpar();
+		tblObras.setModel(tableModel);
 		txtObservacao.setText("");
 	}
 

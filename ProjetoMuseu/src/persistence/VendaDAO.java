@@ -10,16 +10,12 @@ import java.util.List;
 
 import entity.Venda;
 
-public class VendaDAO implements IVenda{
+public class VendaDAO implements IVenda {
 
 	/*
-	 * private int id;
-	 * private int qtdInteiro;
-	 * private int qtdMeio;
-	 * private float valorTotal;
-	 * private String tipoPagamento;
-	 * private Ingresso ingresso;
-	 * private boolean reserva;
+	 * private int id; private int qtdInteiro; private int qtdMeio; private
+	 * float valorTotal; private String tipoPagamento; private Ingresso
+	 * ingresso; private boolean reserva;
 	 */
 
 	private Connection c;
@@ -35,10 +31,10 @@ public class VendaDAO implements IVenda{
 			String sql = "INSERT INTO venda (qtdInteiro, qtdMeio, valorTotal, tipoPagamanto, ingresso_id, reserva) VALUES (?,?,?,?,?,?)";
 			PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, v.getQtdInteiro());
-			ps.setInt(2, v.getQtdMeio());
-			ps.setFloat(3, v.getValorTotal());
-			ps.setString(4, v.getTipoPagamento());
-			ps.setBoolean(6, v.isReverva());
+			ps.setInt(2, v.getQtdMeia());
+			ps.setFloat(3, (float) v.getValorTotal());
+			ps.setString(4, v.getFormaPagamento());
+			ps.setBoolean(6, false);// v.isReverva());
 
 			int linhasAfetadas = ps.executeUpdate();
 
@@ -73,10 +69,10 @@ public class VendaDAO implements IVenda{
 		if (rs.next()) {
 			v.setId(id);
 			v.setQtdInteiro(rs.getInt("qtdInteiro"));
-			v.setQtdMeio(rs.getInt("qtdMeio"));
+			v.setQtdMeia(rs.getInt("qtdMeio"));
 			v.setValorTotal(rs.getFloat("valorTotal"));
-			v.setTipoPagamento(rs.getString("tipoPagamento"));
-			v.setReserva(rs.getBoolean("reserva"));
+			v.setFormaPagamento(rs.getString("tipoPagamento"));
+			// v.setReserva(rs.getBoolean("reserva"));
 		} else {
 			v = null;
 		}
@@ -97,10 +93,10 @@ public class VendaDAO implements IVenda{
 			Venda v = new Venda();
 			v.setId(rs.getInt("id"));
 			v.setQtdInteiro(rs.getInt("qtdInteiro"));
-			v.setQtdMeio(rs.getInt("qtdMeio"));
+			v.setQtdMeia(rs.getInt("qtdMeio"));
 			v.setValorTotal(rs.getFloat("valorTotal"));
-			v.setTipoPagamento(rs.getString("tipoPagamento"));
-			v.setReserva(rs.getBoolean("reserva"));
+			v.setFormaPagamento(rs.getString("tipoPagamento"));
+			// v.setReserva(rs.getBoolean("reserva"));
 			vList.add(v);
 		}
 

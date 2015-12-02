@@ -11,10 +11,11 @@ import entity.Obra;
 public class ObraTableModel extends AbstractTableModel {
 
 	private static final int TITULO = 0;
-	private static final int TIPO = 1;
-	private static final int AUTOR = 2;
+	private static final int CATEGORIA = 1;
+	private static final int TECNICA = 2;
+	private static final int AUTOR = 3;
 
-	private String[] colunas = new String[] { "Título", "Tipo", "Autor" };
+	private String[] colunas = new String[] { "Título", "Categoria", "Técnica", "Autor" };
 	private List<Obra> linhas;
 
 	public ObraTableModel() {
@@ -45,7 +46,9 @@ public class ObraTableModel extends AbstractTableModel {
 		switch (columnIndex) {
 		case TITULO:
 			return String.class;
-		case TIPO:
+		case CATEGORIA:
+			return String.class;
+		case TECNICA:
 			return String.class;
 		case AUTOR:
 			return String.class;
@@ -66,8 +69,10 @@ public class ObraTableModel extends AbstractTableModel {
 		switch (colIndex) {
 		case TITULO:
 			return o.getTitulo();
-		case TIPO:
-			return o.getTipo();
+		case CATEGORIA:
+			return o.getCategoria();
+		case TECNICA:
+			return o.getTecnica();
 		case AUTOR:
 			return o.getAutor().getNome();
 		default:

@@ -11,8 +11,8 @@ public class VisitanteDAO implements IVisitante{
 	private Connection c;
 
 	public VisitanteDAO() {
-		GenericConnection gc = new ConnectionImpl();
-		c = gc.getConnection();
+		IConexaoMySQL gc = new ConexaoMySQL();
+		c = gc.connect();
 	}
 
 	

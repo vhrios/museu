@@ -21,15 +21,9 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 
 	@Override
 	public boolean manter(List<Obra> obras, Emprestimo emprestimo) throws SQLException {
-
-		String sql = "DELETE emprestimo_obra WHERE emprestimo_id = ?";
-		PreparedStatement ps = c.prepareStatement(sql);
-		ps.setInt(1, emprestimo.getId());
-		ps.executeUpdate();
-
 		if (obras.size() != 0) {
-			sql = "INSERT INTO emprestimo_obra (obra_id, emprestimo_id) VALUES (?,?)";
-			ps = c.prepareStatement(sql, Statement.SUCCESS_NO_INFO);
+			String sql = "INSERT INTO emprestimo_obra (obra_id, emprestimo_id) VALUES (?,?)";
+			PreparedStatement ps = c.prepareStatement(sql, Statement.SUCCESS_NO_INFO);
 
 			int i = 0;
 			for (Obra atividade : obras) {
@@ -68,7 +62,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 
 	@Override
 	public List<Obra> pesquisarPorEmprestimo(int i) throws SQLException {
-		String sql = "SELECT obra_id FROM emprestimo_obra WHERE emprestimo_id = ?";
+		String sql = "SELECT obra_id FROM museu.emprestimo_obra WHERE emprestimo_id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setInt(1, i);
 
@@ -77,7 +71,7 @@ public class EmprestimoObraDAO implements IEmprestimoObra {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			aList.add(new ObraDAO().pesquisarPorID(rs.getInt("id")));
+			aList.add(new ObraDAO().pesquisarPorID(rs.getInt("obra_id")));
 		}
 		ps.close();
 		return aList;

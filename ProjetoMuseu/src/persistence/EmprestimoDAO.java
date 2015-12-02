@@ -64,8 +64,9 @@ public class EmprestimoDAO implements IEmprestimo{
 		}
 
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
-			if (idsGerados.next()) {
-				e.setId(idsGerados.getInt(1));
+			if (idsGerados.next() || e.getId()!=0) {
+				int id = e.getId()==0 ? idsGerados.getInt(1) : e.getId();
+				e.setId(id);
 				new EmprestimoObraDAO().manter(e.getObras(), e);
 				ps.close();
 				return true;

@@ -36,6 +36,7 @@ public class TelaInstituicao {
 	@SuppressWarnings("rawtypes")
 	private JComboBox cmbPais;
 	private JButton btnSalvar, btnVoltar, btnNovo, btnPesquisar;
+	private int id;
 
 	/**
 	 * Launch the application.
@@ -194,7 +195,13 @@ public class TelaInstituicao {
 			public void actionPerformed(ActionEvent e) {
 				Instituicao i = new Instituicao();
 
-				i.setId(Integer.parseInt(txtId.getText()));
+				try {
+					int idAux = txtId.getText().isEmpty() ? id : Integer.parseInt(txtId.getText());
+					i.setId(idAux);
+				} catch (NumberFormatException n) {
+					i.setId(0);
+				}
+
 				i.setNome(txtInstituicao.getText());
 				i.setEndereco(txtLogradouro.getText());
 				i.setNumero(txtNum.getText());
@@ -212,6 +219,7 @@ public class TelaInstituicao {
 				if (ic.verificarInstituicao(i)) {
 					if (ic.salvarInstituicao(i)) {
 						JOptionPane.showMessageDialog(null, "Instituição salva com sucesso");
+						limparForm();
 					} else {
 						JOptionPane.showMessageDialog(null, "Falha ao salvar a Instituição");
 					}
@@ -243,6 +251,7 @@ public class TelaInstituicao {
 					InstituicaoController ic = new InstituicaoController();
 					Instituicao i = ic.pesquisarPorId(Integer.parseInt(txtId.getText()));
 					if (i != null) {
+						id = i.getId();
 						txtId.setText(Integer.toString(i.getId()));
 						txtInstituicao.setText(i.getNome());
 						txtLogradouro.setText(i.getEndereco());
@@ -250,7 +259,7 @@ public class TelaInstituicao {
 						txtCep.setText(i.getCep());
 						txtEstado.setText(i.getEstado());
 						txtCidade.setText(i.getCidade());
-						cmbPais.setSelectedItem(Paises.valueOf(i.getPais().replace(' ', '_')));
+						cmbPais.setSelectedItem(i.getPais());
 
 						txtContato.setText(i.getContato());
 						txtTelefone.setText(i.getTelefone());
@@ -271,6 +280,7 @@ public class TelaInstituicao {
 	}
 
 	private void limparForm() {
+		id = 0;
 		txtId.setText("");
 		txtInstituicao.setText("");
 		txtLogradouro.setText("");

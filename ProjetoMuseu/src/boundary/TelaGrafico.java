@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -62,7 +63,7 @@ public class TelaGrafico implements ActionListener {
 		chart.setTitle(titulo);
 		chart.setLabelLineLength(10);
 		// chart.setLegendVisible(false);
-		// chart.setLegendSide(Side.RIGHT);
+		chart.setLegendSide(Side.RIGHT);
 
 		((Group) scene.getRoot()).getChildren().add(chart);
 
@@ -97,8 +98,6 @@ public class TelaGrafico implements ActionListener {
 				"Nacionalidade", "Nível acadêmico", "Meio de locomoção" }));
 		cmbFiltro.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				lista.removeAll(lista);
-
 				GraficoController gc = new GraficoController();
 				switch (cmbFiltro.getSelectedItem().toString()) {
 				case "Idade":
@@ -122,12 +121,14 @@ public class TelaGrafico implements ActionListener {
 					break;
 				}
 
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						initFxLater(jFXPanel, lista, cmbFiltro.getSelectedItem().toString());
-					}
-				});
+				if (lista != null) {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							initFxLater(jFXPanel, lista, cmbFiltro.getSelectedItem().toString());
+						}
+					});
+				}
 			}
 		});
 		frmGrafico.getContentPane().add(cmbFiltro);

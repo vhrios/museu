@@ -51,7 +51,7 @@ public class AutorDAO implements IAutor {
 			ps.setString(15, a.getPais());
 		} else {
 			String sql = "UPDATE museu.autor SET nome = ?, diaN = ?, mesN = ?, anoN = ?, diaM = ?, mesM = ?, anoM = ?, diaIniAtv = ?, mesIniAtv = ?, anoIniAtv = ?, diaFimAtv = ?, mesFimAtv = ?, anoFimAtv = ?, descricao = ?, pais = ? WHERE id = ?";
-			ps = c.prepareStatement(sql);
+			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, a.getNome());
 			ps.setInt(2, a.getDiaN());
 			ps.setInt(3, a.getMesN());
@@ -76,8 +76,9 @@ public class AutorDAO implements IAutor {
 		}
 
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
-			if (idsGerados.next()) {
-				a.setId(idsGerados.getInt(1));
+			if (idsGerados.next() || a.getId()!=0) {
+				int id = a.getId()==0 ? idsGerados.getInt(1) : a.getId();
+				a.setId(id);
 				new AutorAtividadeDAO().manter(a.getAtividades(), a);
 				ps.close();
 				return true;
@@ -107,7 +108,7 @@ public class AutorDAO implements IAutor {
 
 	@Override
 	public Autor pesquisarPorID(int id) throws SQLException {
-		String sql = "SELECT nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor WHERE id = ?";
+		String sql = "SELECT nome, diaN, mesN, anoN, diaM, mesM, anoM, diaIniAtv, mesIniAtv, anoIniAtv, diaFimAtv, mesFimAtv, anoFimAtv, descricao, pais FROM museu.autor WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setInt(1, id);
 
@@ -116,7 +117,7 @@ public class AutorDAO implements IAutor {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
-			a.setId(rs.getInt("id"));
+			a.setId(id);
 			a.setNome(rs.getString("nome"));
 
 			a.setDiaN(rs.getInt("diaN"));
@@ -185,7 +186,7 @@ public class AutorDAO implements IAutor {
 
 	@Override
 	public List<Autor> carregarTodos() throws SQLException {
-		String sql = "SELECT id, nome, dataNasc, dataObito, iniAtividade, fimAtividade, descricao, pais_id FROM autor";
+		String sql = "SELECT id, nome, diaN, mesN, anoN, diaM, mesM, anoM, diaIniAtv, mesIniAtv, anoIniAtv, diaFimAtv, mesFimAtv, anoFimAtv, descricao, pais FROM museu.autor";
 		PreparedStatement ps = c.prepareStatement(sql);
 
 		List<Autor> aList = new ArrayList<Autor>();

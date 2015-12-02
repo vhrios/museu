@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,7 +21,10 @@ import controller.AutorController;
 import controller.InstituicaoController;
 import controller.ObraController;
 import entity.Autor;
+import entity.Categoria;
 import entity.Instituicao;
+import entity.Meses;
+import entity.Movimento;
 import entity.Obra;
 
 @SuppressWarnings("rawtypes")
@@ -32,12 +36,10 @@ public class TelaObra {
 	private JTextField txtApelido;
 	private JLabel lblCategoria;
 	private JComboBox<String> cmbCategoria, cmbNomeAutor, cmbMovimento, cmbEpoca;
-	private JLabel lblTipo;
-	private JComboBox<String> cmbTipo, cmbDoador;
+	private JComboBox<String> cmbDoador;
 	private JLabel lblTcnica;
-	private JComboBox cmbTecnica;
 	private JLabel lblData;
-	private JTextField txtData;
+	private JTextField txtDia;
 	private JTextField txtNomeAutor;
 	private JTextField txtAltura;
 	private JTextField txtLargura;
@@ -49,6 +51,10 @@ public class TelaObra {
 	private JButton btnNovo;
 	private List<Instituicao> iList;
 	private List<Autor> aList;
+	private int id;
+	private JTextField txtAno;
+	private JComboBox cmbMes;
+	private JTextField txtTecnica;
 
 	/**
 	 * Launch the application.
@@ -117,44 +123,39 @@ public class TelaObra {
 		frmObra.getContentPane().add(lblCategoria);
 
 		cmbCategoria = new JComboBox();
+		for (Categoria c : Categoria.values()) {
+			cmbCategoria.addItem(c.toString().replace('_', ' '));
+		}
 		cmbCategoria.setBounds(129, 124, 136, 20);
 		frmObra.getContentPane().add(cmbCategoria);
 
-		lblTipo = new JLabel("*Tipo :");
-		lblTipo.setBounds(286, 127, 46, 14);
-		frmObra.getContentPane().add(lblTipo);
-
-		cmbTipo = new JComboBox();
-		cmbTipo.setBounds(324, 124, 185, 20);
-		frmObra.getContentPane().add(cmbTipo);
-
 		lblTcnica = new JLabel("T\u00E9cnica :");
-		lblTcnica.setBounds(63, 166, 57, 14);
+		lblTcnica.setBounds(292, 127, 57, 14);
 		frmObra.getContentPane().add(lblTcnica);
 
-		cmbTecnica = new JComboBox();
-		cmbTecnica.setBounds(119, 163, 146, 20);
-		frmObra.getContentPane().add(cmbTecnica);
-
-		lblData = new JLabel("Data :");
-		lblData.setBounds(286, 166, 46, 14);
+		lblData = new JLabel("Dia:");
+		lblData.setBounds(67, 200, 46, 14);
 		frmObra.getContentPane().add(lblData);
 
-		txtData = new JTextField();
-		txtData.setBounds(324, 163, 86, 20);
-		frmObra.getContentPane().add(txtData);
-		txtData.setColumns(10);
+		txtDia = new JTextField();
+		txtDia.setBounds(106, 197, 30, 20);
+		frmObra.getContentPane().add(txtDia);
+		txtDia.setColumns(10);
 
 		cmbEpoca = new JComboBox();
-		cmbEpoca.setBounds(431, 163, 65, 20);
+		cmbEpoca.setModel(new DefaultComboBoxModel(new String[] { "a.C.", "d.C." }));
+		cmbEpoca.setBounds(460, 197, 65, 20);
 		frmObra.getContentPane().add(cmbEpoca);
 
 		JLabel lblMovimento = new JLabel("*Movimento :");
-		lblMovimento.setBounds(63, 202, 73, 14);
+		lblMovimento.setBounds(63, 166, 73, 14);
 		frmObra.getContentPane().add(lblMovimento);
 
 		cmbMovimento = new JComboBox();
-		cmbMovimento.setBounds(141, 199, 146, 20);
+		for (Movimento m : Movimento.values()) {
+			cmbMovimento.addItem(m.toString().replace('_', ' '));
+		}
+		cmbMovimento.setBounds(139, 163, 146, 20);
 		frmObra.getContentPane().add(cmbMovimento);
 
 		JLabel lblAutor = new JLabel("Autor :");
@@ -249,17 +250,24 @@ public class TelaObra {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Obra o = new Obra();
-				o.setId(Integer.parseInt(txtIdentificador.getText()));
+
+				try {
+					int idAux = txtIdentificador.getText().isEmpty() ? id
+							: Integer.parseInt(txtIdentificador.getText());
+					o.setId(idAux);
+				} catch (NumberFormatException n) {
+					o.setId(0);
+				}
+
 				o.setTitulo(txtTitulo.getText());
 				o.setApelido(txtApelido.getText());
 				o.setCategoria(cmbCategoria.getSelectedItem().toString());
-				o.setTipo(cmbTipo.getSelectedItem().toString());
-				cmbTecnica.getSelectedItem();
+				o.setTecnica(txtTecnica.getText());
 				o.setMovimento(cmbMovimento.getSelectedItem().toString());
 				o.setAutor(aList.get(cmbNomeAutor.getSelectedIndex()));
-				o.setDia(Integer.parseInt(txtData.getText().substring(0, 1)));
-				o.setMes(Integer.parseInt(txtData.getText().substring(2, 3)));
-				o.setAno(Integer.parseInt(txtData.getText().substring(4)));
+				o.setDia(Integer.parseInt(txtDia.getText()));
+				o.setMes(cmbMes.getSelectedIndex());
+				o.setAno(Integer.parseInt(txtAno.getText()));
 				o.setPeriodo(cmbEpoca.getSelectedItem().toString());
 				o.setAltura((Float.parseFloat(txtAltura.getText())));
 				o.setLargura((Float.parseFloat(txtLargura.getText())));
@@ -273,6 +281,7 @@ public class TelaObra {
 				if (oc.verificarObra(o)) {
 					if (oc.salvarObra(o)) {
 						JOptionPane.showMessageDialog(null, "Obra salva com sucesso");
+						limparForm();
 					} else {
 						JOptionPane.showMessageDialog(null, "Falha ao salvar a Obra");
 					}
@@ -296,15 +305,17 @@ public class TelaObra {
 					Obra o = new Obra();
 					o = oc.pesquisarObra(Integer.parseInt(txtIdentificador.getText()));
 					if (o != null) {
+						id = o.getId();
 						txtIdentificador.setText(Integer.toString(o.getId()));
 						txtTitulo.setText(o.getTitulo());
 						txtApelido.setText(o.getApelido());
 						cmbCategoria.setSelectedItem(o.getCategoria());
-						cmbTipo.setSelectedItem(o.getTipo());
-						// cmbTecnica.setSelectedItem();
+						txtTecnica.setText(o.getTecnica());
 						cmbMovimento.setSelectedItem(o.getMovimento());
 						cmbNomeAutor.setSelectedItem(o.getAutor().getNome());
-						txtData.setText(o.getDia() + "/" + o.getMes() + "/" + o.getAno());
+						txtDia.setText(String.format("%02d", o.getDia()));
+						cmbMes.setSelectedIndex(o.getMes());
+						txtAno.setText(String.format("%04d", o.getAno()));
 						cmbEpoca.setSelectedItem(o.getPeriodo());
 						txtAltura.setText(Float.toString(o.getAltura()));
 						txtLargura.setText(Float.toString(o.getLargura()));
@@ -331,20 +342,47 @@ public class TelaObra {
 		});
 		btnNovo.setBounds(380, 530, 89, 23);
 		frmObra.getContentPane().add(btnNovo);
+		
+		cmbMes = new JComboBox();
+		for (Meses m : Meses.values()) {
+			cmbMes.addItem(m.toString().replace('_', ' '));
+		}
+		cmbMes.setBounds(196, 197, 146, 20);
+		frmObra.getContentPane().add(cmbMes);
+		
+		JLabel lblMs = new JLabel("M\u00EAs:");
+		lblMs.setBounds(151, 200, 46, 14);
+		frmObra.getContentPane().add(lblMs);
+		
+		txtAno = new JTextField();
+		txtAno.setColumns(10);
+		txtAno.setBounds(398, 197, 57, 20);
+		frmObra.getContentPane().add(txtAno);
+		
+		JLabel lblAno = new JLabel("Ano:");
+		lblAno.setBounds(358, 200, 46, 14);
+		frmObra.getContentPane().add(lblAno);
+		
+		txtTecnica = new JTextField();
+		txtTecnica.setColumns(10);
+		txtTecnica.setBounds(369, 124, 140, 20);
+		frmObra.getContentPane().add(txtTecnica);
 
 	}
 
 	private void limparForm() {
+		id = 0;
 		txtIdentificador.setText("");
 		txtTitulo.setText("");
 		txtApelido.setText("");
 		cmbCategoria.setSelectedIndex(0);
-		cmbTipo.setSelectedItem(0);
-		cmbTecnica.setSelectedItem(0);
-		cmbMovimento.setSelectedItem(0);
+		txtTecnica.setText("");
+		cmbMovimento.setSelectedIndex(0);
 		txtNomeAutor.setText("");
-		cmbNomeAutor.setSelectedItem(0);
-		txtData.setText("");
+		cmbNomeAutor.setSelectedIndex(0);
+		txtDia.setText("");
+		cmbMes.setSelectedIndex(0);
+		txtAno.setText("");
 		cmbEpoca.setSelectedIndex(0);
 		txtAltura.setText("");
 		txtLargura.setText("");

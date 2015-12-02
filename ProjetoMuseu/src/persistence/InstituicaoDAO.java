@@ -30,7 +30,7 @@ public class InstituicaoDAO implements IInstituicao {
 	public boolean manter(Instituicao i) throws SQLException {
 		PreparedStatement ps;
 		if (i.getId() == 0) {
-			String sql = "INSERT INTO instituicao (nome, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO museu.instituicao (nome, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, i.getNome());
 			ps.setString(2, i.getEndereco());
@@ -44,8 +44,8 @@ public class InstituicaoDAO implements IInstituicao {
 			ps.setString(10, i.getEstado());
 			ps.setString(11, i.getCidade());
 		} else {
-			String sql = "UPDATE atividade SET nome = ?, endereco = ?, numero = ?, cep = ?, contato = ?, cargo = ?, telefone = ?, email = ?, pais = ?, estado = ?, cidade = ? WHERE id = ?";
-			ps = c.prepareStatement(sql);
+			String sql = "UPDATE museu.instituicao SET nome = ?, endereco = ?, numero = ?, cep = ?, contato = ?, cargo = ?, telefone = ?, email = ?, pais = ?, estado = ?, cidade = ? WHERE id = ?";
+			ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, i.getNome());
 			ps.setString(2, i.getEndereco());
 			ps.setString(3, i.getNumero());
@@ -67,8 +67,9 @@ public class InstituicaoDAO implements IInstituicao {
 		}
 
 		try (ResultSet idsGerados = ps.getGeneratedKeys()) {
-			if (idsGerados.next()) {
-				i.setId(idsGerados.getInt(1));
+			if (idsGerados.next() || i.getId()!=0) {
+				int id = i.getId()!=0 ? i.getId() : idsGerados.getInt(1);
+				i.setId(id);
 				ps.close();
 				return true;
 			} else {
@@ -80,7 +81,7 @@ public class InstituicaoDAO implements IInstituicao {
 	@Override
 	public boolean apagar(Instituicao i) throws SQLException {
 		if (i.getId() != 0) {
-			String sql = "DELETE instituicao WHERE id = ?";
+			String sql = "DELETE museu.instituicao WHERE id = ?";
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setInt(1, i.getId());
 			int linhasAfetadas = ps.executeUpdate();
@@ -97,7 +98,7 @@ public class InstituicaoDAO implements IInstituicao {
 
 	@Override
 	public Instituicao pesquisarPorID(int id) throws SQLException {
-		String sql = "SELECT nome, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM instituicao WHERE id = ?";
+		String sql = "SELECT nome, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade FROM museu.instituicao WHERE id = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setInt(1, id);
 
@@ -127,7 +128,7 @@ public class InstituicaoDAO implements IInstituicao {
 
 	@Override
 	public Instituicao pesquisarPorNome(String nome) throws SQLException {
-		String sql = "SELECT id, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM instituicao WHERE nome = '?'";
+		String sql = "SELECT id, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade FROM museu.instituicao WHERE nome = ?";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, nome);
 
@@ -157,7 +158,7 @@ public class InstituicaoDAO implements IInstituicao {
 
 	@Override
 	public List<Instituicao> carregarTodos() throws SQLException {
-		String sql = "SELECT id, nome, endereco, numero, cep, contato, cargo, telefone, email, pais_id, estado_id, cidade_id FROM atividade";
+		String sql = "SELECT id, nome, endereco, numero, cep, contato, cargo, telefone, email, pais, estado, cidade FROM museu.instituicao";
 		PreparedStatement ps = c.prepareStatement(sql);
 
 		List<Instituicao> iList = new ArrayList<Instituicao>();

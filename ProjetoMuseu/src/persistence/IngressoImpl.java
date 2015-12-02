@@ -19,8 +19,8 @@ public class IngressoImpl implements IIngresso{
 	Connection c;
 	
 	public IngressoImpl() {
-		GenericConnection cg = new ConnectionImpl();
-		c = cg.getConnection();
+		IConexaoMySQL cg = new ConexaoMySQL();
+		c = cg.connect();
 	}
 
 	@Override

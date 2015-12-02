@@ -12,7 +12,7 @@ import java.util.List;
 import entity.Autor;
 import entity.Ingresso;
 
-public class IngressoDAO implements IIngresso{
+public class IngressoDAO /*implements IIngresso*/{
 
 	/*
 	 * private int id;
@@ -32,7 +32,7 @@ public class IngressoDAO implements IIngresso{
 		IConexaoMySQL iC = new ConexaoMySQL();
 		c = iC.connect();
 	}
-
+/*
 	@Override
 	public boolean manter(Ingresso i) throws SQLException {
 		PreparedStatement ps;
@@ -215,5 +215,5 @@ public class IngressoDAO implements IIngresso{
 		ps.close();
 		return iList;
 	}
-
+*/
 }

@@ -17,7 +17,7 @@ public class Obra {
 	private Autor autor;
 	private Instituicao instituicao;
 	private String categoria;
-	private String tipo;
+	private String tecnica;
 	private String movimento;
 
 	public int getId() {
@@ -140,12 +140,12 @@ public class Obra {
 		this.categoria = categoria;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public String getTecnica() {
+		return tecnica;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setTecnica(String tecnica) {
+		this.tecnica = tecnica;
 	}
 
 	public String getMovimento() {
