@@ -14,23 +14,28 @@ import java.util.List;
 import entity.Exposicao;
 import entity.Ingresso;
 
-public class IngressoImpl implements IIngresso{
-	
+public class IngressoImpl implements IIngresso {
+
 	Connection c;
-	
+
 	public IngressoImpl() {
 		IConexaoMySQL cg = new ConexaoMySQL();
 		c = cg.connect();
 	}
 
 	@Override
-	public void insereIngresso(Ingresso i, int e) throws SQLException {
-		String sql = "INSERT INTO ingresso (id_exposicao, precoSemana, precoFimDeSemana, qtdIngresso) VALUES (?,?,?,?)";
+	public void insereIngresso(Ingresso i, int idAutor) throws SQLException {
+		String sql = "INSERT INTO museu.ingresso (tituloExibicao,dataInicio,dataFim,exibicaoEspecial,precoSemana,precoFimDeSemana,autor_id,limiteIngresso) VALUES (?,?,?,?,?,?,?,?,?)";
 		PreparedStatement ps = c.prepareStatement(sql);
-		ps.setInt(1, e);
-		ps.setDouble(2, i.getPrecoSemana());
-		ps.setDouble(3, i.getPrecoFimDeSemana());
-		ps.setInt(4, i.getLimiteIngresso());
+		ps.setString(1, i.getTituloExibicao());
+		ps.setDate(2, new java.sql.Date(i.getDataInicio().getTime()));
+		ps.setDate(3, new java.sql.Date(i.getDataFim().getTime()));
+		ps.setBoolean(4, i.getExibicaoEspecial() == 1 ? true : false);
+		ps.setFloat(5, (float) i.getPrecoSemana());
+		ps.setFloat(6, (float) i.getPrecoFimDeSemana());
+		ps.setInt(7, idAutor);
+		ps.setInt(8, i.getLimiteIngresso());
+
 		ps.executeUpdate();
 		ps.close();
 	}
@@ -39,16 +44,16 @@ public class IngressoImpl implements IIngresso{
 	public void insereExposicao(Exposicao e) throws SQLException {
 		String sql = "INSERT INTO exposicao (titulo, dataInicio, dataFim, exibicaoEspecial, horario) VALUES (?,?,?,?,?)";
 		PreparedStatement ps;
-			ps = c.prepareStatement(sql);
-			ps.setString(1, e.getTituloExibicao());
-			java.sql.Date dtI = new java.sql.Date(e.getDataInicio().getTime());
-			ps.setDate(2, dtI);
-			java.sql.Date dtF = new java.sql.Date(e.getDataFim().getTime());
-			ps.setDate(3, dtF);
-			ps.setInt(4, e.getExibicaoEspecial());
-//			ps.setString(5, e.getHorario());
-			ps.executeUpdate();
-			ps.close();
+		ps = c.prepareStatement(sql);
+		ps.setString(1, e.getTituloExibicao());
+		java.sql.Date dtI = new java.sql.Date(e.getDataInicio().getTime());
+		ps.setDate(2, dtI);
+		java.sql.Date dtF = new java.sql.Date(e.getDataFim().getTime());
+		ps.setDate(3, dtF);
+		ps.setInt(4, e.getExibicaoEspecial());
+		// ps.setString(5, e.getHorario());
+		ps.executeUpdate();
+		ps.close();
 	}
 
 	@Override
@@ -84,7 +89,7 @@ public class IngressoImpl implements IIngresso{
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			lista.add(expo);
 		}
 		return lista;
